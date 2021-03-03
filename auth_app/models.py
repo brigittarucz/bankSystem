@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-class Customer(models.Model):
+# Customizations for the user
+class Profile(models.Model):
     RANK_CHOICES = [
         ('gold', 'Gold'),
         ('silver', 'Silver'),
@@ -13,7 +14,7 @@ class Customer(models.Model):
     customer_rank = models.CharField(max_length=10, choices=RANK_CHOICES)
     customer_phone_number = models.CharField(max_length=20)
     customer_token = models.CharField(max_length=256)
-    # Multi factor enabled
+    # # Multi factor enabled
     customer_mfe = models.BooleanField(blank=False)
     customer_can_loan = models.BooleanField(blank=False)
 
