@@ -4,10 +4,18 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login as loginMethod, logout as logoutMethod
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 # Equivalent: from django.forms import ModelForm
 from django import forms
 
-class SignupForm(forms.ModelForm):
+# SignupUserForm inherits from UserCreationForm
+class SignupUserForm(UserCreationForm):
+    # As UserCreationForm provides only 3 params 
+    # username, password1, password2 we get the others from the User model
+    
+    # The Meta class has two functions:
+    # 1. Indicate which model we are using
+    # 2. Show the fields we want to include in our final form
     class Meta:
         model = User 
         fields = [
@@ -15,7 +23,8 @@ class SignupForm(forms.ModelForm):
             'first_name',
             'last_name',
             'email',
-            'password',
+            'password1',
+            'password2',
             'is_staff'
         ]
 
@@ -56,7 +65,7 @@ def login(request):
 
 
 def signup(request):
-    form = SignupForm(None)
+    form = SignupUserForm(None)
     context = {
         'form': form
     }

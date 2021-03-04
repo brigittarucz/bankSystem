@@ -10,7 +10,7 @@ class Profile(models.Model):
     ]
 
     # user = User.objects.create_user('username', first_name='positional-arg', last_name='positional-arg')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     customer_rank = models.CharField(max_length=10, choices=RANK_CHOICES)
     customer_phone_number = models.CharField(max_length=20)
     customer_token = models.CharField(max_length=256)
@@ -20,6 +20,6 @@ class Profile(models.Model):
 
     # Converts Python obj into strings
     def __str__(self):
-        return f"{self.user}"
+        return f"{self}"
 
 
