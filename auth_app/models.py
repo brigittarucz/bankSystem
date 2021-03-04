@@ -20,6 +20,7 @@ class Profile(models.Model):
 
     # Converts Python obj into strings
     def __str__(self):
+        # Returning self would get an infinite loop
         return f"{self.user}"
 
 

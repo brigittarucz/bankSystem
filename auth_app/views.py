@@ -101,9 +101,13 @@ def signup(request):
         user = User.objects.create_user(email = email_post, username = username_post, password = password_post, is_staff = is_staff_post)
         # create() does not hash 
         profile = Profile.objects.create(user = user, customer_rank = customer_rank_post, customer_mfe = False, customer_can_loan = False)
-
+        # Todo: check for password
+        # Todo: correct fields
+        # Todo: add transactions
+        # Todo: verify validity
         print(user)
         print(profile)
+        # Transactions: https://django.cowhite.com/blog/customizing-user-details-user-models-and-authentication/
 
 
 
