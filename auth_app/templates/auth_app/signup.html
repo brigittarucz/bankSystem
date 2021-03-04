@@ -9,7 +9,8 @@
     <h1> Signup </h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ signup_user }}
+        {{ profile_user }}
         <button type="submit">Sign Up</button>
     </form>
 </body>
