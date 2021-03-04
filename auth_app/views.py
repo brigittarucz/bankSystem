@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 # Equivalent: from django.forms import ModelForm
 from django import forms
+from .models import Profile
 
 # SignupUserForm inherits from UserCreationForm
 class SignupUserForm(UserCreationForm):
@@ -26,6 +27,13 @@ class SignupUserForm(UserCreationForm):
             'password1',
             'password2',
             'is_staff'
+        ]
+
+class SignupProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = [
+            'customer_rank'
         ]
 
 class LoginForm(forms.ModelForm):
@@ -65,8 +73,10 @@ def login(request):
 
 
 def signup(request):
-    form = SignupUserForm(None)
+    signup_user = SignupUserForm()
+    profile_user = SignupProfileForm()
     context = {
-        'form': form
+        'signup_user': signup_user,
+        'profile_user': profile_user
     }
     return render(request, 'auth_app/signup.html', context)
