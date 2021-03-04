@@ -9,6 +9,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .models import Profile
 
+
+# Future Todo: Move the forms in a separate forms.py file 
 # SignupUserForm inherits from UserCreationForm
 class SignupUserForm(UserCreationForm):
     # As UserCreationForm provides only 3 params 
@@ -73,10 +75,41 @@ def login(request):
 
 
 def signup(request):
+    # https://stackoverflow.com/questions/59133456/how-to-add-2-models-in-a-registration-form-in-django
     signup_user = SignupUserForm()
     profile_user = SignupProfileForm()
     context = {
         'signup_user': signup_user,
         'profile_user': profile_user
     }
+
+    if request.method == "POST":
+        # This:
+        # print(request.POST)
+        # Prints this:
+        # <QueryDict: {'csrfmiddlewaretoken': ['A0390Q8p7lzY50KSCbWpfs1hW7T40G8I5zhYYliyyHbAd1oaSTq9gkSlYHxEHCh0'], 'username': ['root'], 'first_name': [''], 'last_name': [''], 'email': [''], 'password1': ['v!rbeK9kHj6uLTh'], 'password2': ['v!rbeK9kHj6uLTh'], 'customer_rank': ['gold']}>
+        # signup_user_post = SignupUserForm(request.POST) OR
+        username_post = request.POST['username']
+        fname_post = request.POST['first_name']
+        lname_post = request.POST['last_name']
+        email_post = request.POST['email']
+        password_post = request.POST['password1']
+        # Python's ternary operator
+        is_staff_post = True if request.POST['is_staff'] == 'on' else False
+        customer_rank_post = request.POST['customer_rank']
+        # create_user() hashes the password
+        user = User.objects.create_user(email = email_post, username = username_post, password = password_post, is_staff = is_staff_post)
+        # create() does not hash 
+        profile = Profile.objects.create(user = user, customer_rank = customer_rank_post, customer_mfe = False, customer_can_loan = False)
+
+        print(user)
+        print(profile)
+
+
+
+
+
     return render(request, 'auth_app/signup.html', context)
+
+# Migrations issues:
+# https://stackoverflow.com/questions/34548768/django-no-such-table-exception

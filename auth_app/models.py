@@ -20,6 +20,6 @@ class Profile(models.Model):
 
     # Converts Python obj into strings
     def __str__(self):
-        return f"{self}"
+        return f"{self.user}"
 
 
