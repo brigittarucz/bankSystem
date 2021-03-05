@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login as loginUser, logout as logo
 from .forms import SignupProfileForm, SignupUserForm, LoginForm
 from django.contrib.auth.models import User
 from .models import Profile
+from django.db import transaction, DatabaseError
 
 def dashboard(request):
     return render(request, 'auth_app/dashboard.html')
@@ -64,29 +65,51 @@ def signup(request):
         # print(request.POST)
         # Prints this:
         # <QueryDict: {'csrfmiddlewaretoken': ['A0390Q8p7lzY50KSCbWpfs1hW7T40G8I5zhYYliyyHbAd1oaSTq9gkSlYHxEHCh0'], 'username': ['root'], 'first_name': [''], 'last_name': [''], 'email': [''], 'password1': ['v!rbeK9kHj6uLTh'], 'password2': ['v!rbeK9kHj6uLTh'], 'customer_rank': ['gold']}>
-        # signup_user_post = SignupUserForm(request.POST) OR
         signupForm = SignupUserForm(request.POST)
         if signupForm.is_valid():
-            username_post = request.POST['username']
-            fname_post = request.POST['first_name']
-            lname_post = request.POST['last_name']
-            email_post = request.POST['email']
-            password_post = request.POST['password1']
-            # Python's ternary operator
-            is_staff_post = True if request.POST['is_staff'] == 'on' else False
-            print(is_staff_post)
-            customer_rank_post = request.POST['customer_rank']
-            # create_user() hashes the password
-            user = User.objects.create_user(email = email_post, username = username_post, password = password_post)
-            # create() does not hash 
-            profile = Profile.objects.create(user = user, customer_rank = customer_rank_post, customer_mfe = False, customer_can_loan = False)
-            # Todo: check for password
-            # Todo: correct fields
-            # Todo: add transactions
-            # Todo: verify validity
-            print(user)
-            print(profile)
-            # Transactions: https://django.cowhite.com/blog/customizing-user-details-user-models-and-authentication/
+            # No password verification because that is provided out of the box
+            profileForm = SignupProfileForm(request.POST)
+            if profileForm.is_valid():
+                post_username = request.POST['username']
+                post_fname = request.POST['first_name']
+                post_lname = request.POST['last_name']
+                post_email = request.POST['email']
+                post_password = request.POST['password1']
+                post_phone = request.POST['customer_phone_number']
+                # MultiValueDict's get fetches a value and provides a default
+                post_mfe = request.POST.get('customer_mfe', False)
+                post_mfe = True if post_mfe == 'on' else False
+                # post_mfe = True if request.POST['customer_mfe'] == 'on' else False
+
+                exception = True
+
+                # Transactions: https://django.cowhite.com/blog/customizing-user-details-user-models-and-authentication/
+                try:
+                    with transaction.atomic():
+                        # create_user() hashes the password
+                        user = User.objects.create_user(email = post_email, 
+                                                        username = post_username, 
+                                                        password = post_password, 
+                                                        first_name = post_fname, 
+                                                        last_name = post_lname)
+                        # create() does not hash 
+                        profile = Profile.objects.create(user = user, 
+                                                customer_rank = 'bronze',
+                                                customer_phone_number = post_phone,
+                                                customer_token = '123token', 
+                                                customer_mfe = post_mfe, 
+                                                customer_can_loan = False)
+                        # Test exception:
+                        # if exception:
+                        #     raise exception
+                except DatabaseError:
+                    print("Transaction failed")
+                    pass
+            else: 
+                context = {
+                    'signup_user': signup_user,
+                    'profile_user': profileForm
+                }
         else:
             context = {
                 'signup_user': signupForm,
