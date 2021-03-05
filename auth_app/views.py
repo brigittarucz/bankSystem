@@ -38,13 +38,17 @@ class SignupProfileForm(forms.ModelForm):
             'customer_rank'
         ]
 
-class LoginForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = [
-            'username',
-            'password'
-        ]
+class LoginForm(forms.Form):
+    # LoginForm has to be without model otherwise it takes validations
+    # from the user model which implies that is_valid() will fail
+
+    username = forms.CharField(label="Write your username", max_length=100)
+    password = forms.CharField(label="Password", max_length=100)
+
+    fields = [
+        'username',
+        'password'
+    ]
 
 def dashboard(request):
     return render(request, 'auth_app/dashboard.html')
@@ -57,19 +61,30 @@ def login(request):
         'form': form
     }
     
-    # admin3
-    # test
+    # admin3 and test 
+    # superuser and validated1
     if request.method == "POST":
-        userObject = authenticate(request, username=request.POST['username'], password=request.POST['password']) 
-        if userObject:
-            loginMethod(request, userObject)
-            context = {
-                'username': 'John'
-            }
-            # First / cleans up the URL clean following the paths in urls.py
-            return render(request, 'auth_app/dashboard.html', context)
+        loginForm = LoginForm(data=request.POST)
+        if loginForm.is_valid():
+            userObject = authenticate(request, username=request.POST['username'], password=request.POST['password']) 
+            if userObject:
+                loginMethod(request, userObject)
+                context = {
+                    'username': request.POST['username']
+                }
+                # First / cleans up the URL clean following the paths in urls.py
+                return render(request, 'auth_app/dashboard.html', context)
+            else:
+                context = {
+                    'form': form,
+                    'error': 'Incorrect login data'
+                }
+                return render(request, 'auth_app/login.html', context)
         else:
-            return render(request, 'auth_app/login.html', context)
+            context = {
+                'form': loginForm,
+                'error': 'Invalid form'
+            }
 
     # First argument = request object
     # Second argument = template string
