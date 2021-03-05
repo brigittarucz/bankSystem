@@ -105,6 +105,14 @@ def signup(request):
                 except DatabaseError:
                     print("Transaction failed")
                     pass
+                
+                # If it succeeds
+                context = {
+                    'username': post_username
+                }
+
+                return render(request, 'auth_app/dashboard.html', context)
+            
             else: 
                 context = {
                     'signup_user': signup_user,
@@ -116,10 +124,12 @@ def signup(request):
                 'profile_user': profile_user
             }
 
-
-
-
     return render(request, 'auth_app/signup.html', context)
 
 # Migrations issues:
 # https://stackoverflow.com/questions/34548768/django-no-such-table-exception
+
+# Todo: logout & decorator login
+# Todo: admin view models enabled
+# Todo: navigation between login & signup
+# Todo: check routing for logging in url
