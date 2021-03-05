@@ -2,49 +2,11 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.contrib.auth import authenticate, login as loginMethod, logout as logoutMethod
+from django.contrib.auth import authenticate, login as loginUser, logout as logoutUser
+from .forms import SignupProfileForm, SignupUserForm, LoginForm
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-# Equivalent: from django.forms import ModelForm
-from django import forms
 from .models import Profile
-
-
-# Future Todo: Move the forms in a separate forms.py file 
-# SignupUserForm inherits from UserCreationForm
-class SignupUserForm(UserCreationForm):
-    # As UserCreationForm provides only 3 params 
-    # username, password1, password2 we get the others from the User model
-    
-    # The Meta class has two functions:
-    # 1. Indicate which model we are using
-    # 2. Show the fields we want to include in our final form
-    class Meta:
-        model = User 
-        fields = [
-            'username',
-            'first_name',
-            'last_name',
-            'email',
-            'password1',
-            'password2',
-            'is_staff'
-        ]
-
-class SignupProfileForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = [
-            'customer_rank'
-        ]
-
-class LoginForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = [
-            'username',
-            'password'
-        ]
+from django.db import transaction, DatabaseError
 
 def dashboard(request):
     return render(request, 'auth_app/dashboard.html')
@@ -57,16 +19,31 @@ def login(request):
         'form': form
     }
     
-    # admin
-    # test
+    # admin3 and test 
+    # superuser and validated1
     if request.method == "POST":
-        userObject = authenticate(request, username=request.POST['username'], password=request.POST['password']) 
-        if userObject:
-            loginMethod(request, userObject)
-            # First / cleans up the URL clean following the paths in urls.py
-            return HttpResponseRedirect('/auth/dashboard/')
+        loginForm = LoginForm(data=request.POST)
+        if loginForm.is_valid():
+            userObject = authenticate(request, username=request.POST['username'], password=request.POST['password']) 
+            if userObject:
+                loginUser(request, userObject)
+                # Todo: get user rank
+                context = {
+                    'username': request.POST['username']
+                }
+                # First / cleans up the URL clean following the paths in urls.py
+                return render(request, 'auth_app/dashboard.html', context)
+            else:
+                context = {
+                    'form': form,
+                    'error': 'Incorrect login data'
+                }
+                return render(request, 'auth_app/login.html', context)
         else:
-            return print("does not work")
+            context = {
+                'form': loginForm,
+                'error': 'Invalid form'
+            }
 
     # First argument = request object
     # Second argument = template string
@@ -88,32 +65,71 @@ def signup(request):
         # print(request.POST)
         # Prints this:
         # <QueryDict: {'csrfmiddlewaretoken': ['A0390Q8p7lzY50KSCbWpfs1hW7T40G8I5zhYYliyyHbAd1oaSTq9gkSlYHxEHCh0'], 'username': ['root'], 'first_name': [''], 'last_name': [''], 'email': [''], 'password1': ['v!rbeK9kHj6uLTh'], 'password2': ['v!rbeK9kHj6uLTh'], 'customer_rank': ['gold']}>
-        # signup_user_post = SignupUserForm(request.POST) OR
-        username_post = request.POST['username']
-        fname_post = request.POST['first_name']
-        lname_post = request.POST['last_name']
-        email_post = request.POST['email']
-        password_post = request.POST['password1']
-        # Python's ternary operator
-        is_staff_post = True if request.POST['is_staff'] == 'on' else False
-        customer_rank_post = request.POST['customer_rank']
-        # create_user() hashes the password
-        user = User.objects.create_user(email = email_post, username = username_post, password = password_post, is_staff = is_staff_post)
-        # create() does not hash 
-        profile = Profile.objects.create(user = user, customer_rank = customer_rank_post, customer_mfe = False, customer_can_loan = False)
-        # Todo: check for password
-        # Todo: correct fields
-        # Todo: add transactions
-        # Todo: verify validity
-        print(user)
-        print(profile)
-        # Transactions: https://django.cowhite.com/blog/customizing-user-details-user-models-and-authentication/
+        signupForm = SignupUserForm(request.POST)
+        if signupForm.is_valid():
+            # No password verification because that is provided out of the box
+            profileForm = SignupProfileForm(request.POST)
+            if profileForm.is_valid():
+                post_username = request.POST['username']
+                post_fname = request.POST['first_name']
+                post_lname = request.POST['last_name']
+                post_email = request.POST['email']
+                post_password = request.POST['password1']
+                post_phone = request.POST['customer_phone_number']
+                # MultiValueDict's get fetches a value and provides a default
+                post_mfe = request.POST.get('customer_mfe', False)
+                post_mfe = True if post_mfe == 'on' else False
+                # post_mfe = True if request.POST['customer_mfe'] == 'on' else False
 
+                exception = True
 
+                # Transactions: https://django.cowhite.com/blog/customizing-user-details-user-models-and-authentication/
+                try:
+                    with transaction.atomic():
+                        # create_user() hashes the password
+                        user = User.objects.create_user(email = post_email, 
+                                                        username = post_username, 
+                                                        password = post_password, 
+                                                        first_name = post_fname, 
+                                                        last_name = post_lname)
+                        # create() does not hash 
+                        profile = Profile.objects.create(user = user, 
+                                                customer_rank = 'bronze',
+                                                customer_phone_number = post_phone,
+                                                customer_token = '123token', 
+                                                customer_mfe = post_mfe, 
+                                                customer_can_loan = False)
+                        # Test exception:
+                        # if exception:
+                        #     raise exception
+                except DatabaseError:
+                    print("Transaction failed")
+                    pass
+                
+                # If it succeeds
+                context = {
+                    'username': post_username
+                }
 
-
+                return render(request, 'auth_app/dashboard.html', context)
+            
+            else: 
+                context = {
+                    'signup_user': signup_user,
+                    'profile_user': profileForm
+                }
+        else:
+            context = {
+                'signup_user': signupForm,
+                'profile_user': profile_user
+            }
 
     return render(request, 'auth_app/signup.html', context)
 
 # Migrations issues:
 # https://stackoverflow.com/questions/34548768/django-no-such-table-exception
+
+# Todo: logout & decorator login
+# Todo: admin view models enabled
+# Todo: navigation between login & signup
+# Todo: check routing for logging in url

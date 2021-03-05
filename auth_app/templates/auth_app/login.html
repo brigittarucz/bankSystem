@@ -10,6 +10,8 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
+        {{ form.errors }}
+        {{ error }}
         <button type="submit">Log In</button>
     </form>
 </body>
