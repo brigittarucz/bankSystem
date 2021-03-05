@@ -57,16 +57,19 @@ def login(request):
         'form': form
     }
     
-    # admin
+    # admin3
     # test
     if request.method == "POST":
         userObject = authenticate(request, username=request.POST['username'], password=request.POST['password']) 
         if userObject:
             loginMethod(request, userObject)
+            context = {
+                'username': 'John'
+            }
             # First / cleans up the URL clean following the paths in urls.py
-            return HttpResponseRedirect('/auth/dashboard/')
+            return render(request, 'auth_app/dashboard.html', context)
         else:
-            return print("does not work")
+            return render(request, 'auth_app/login.html', context)
 
     # First argument = request object
     # Second argument = template string
