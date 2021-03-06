@@ -8,7 +8,7 @@ class Transaction(models.Model):
     transaction_id = models.CharField(max_length=20)
     transaction_amount = models.DecimalField(decimal_places=2,max_digits=7)
     transaction_currency = models.CharField(max_length=3)
-    transaction_date = models.DateTimeField()
+    transaction_date = models.DateTimeField(auto_now_add=True)
     # # Multi factor enabled
  
 
