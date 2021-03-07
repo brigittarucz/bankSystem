@@ -9,8 +9,10 @@
     <h1> Signup </h1>
     <form method="post">
         {% csrf_token %}
-        {{ signup_user }}
-        {{ profile_user }}
+        {{ signup_user.as_p }}
+        {{ profile_user.as_p }}
+        {{ signup_user.errors }}
+        {{ profile_user.errors }}
         <button type="submit">Sign Up</button>
     </form>
 </body>

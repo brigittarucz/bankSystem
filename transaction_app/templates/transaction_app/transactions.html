@@ -1,12 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transactions</title>
-</head>
-<body>
+{% extends "transaction_app/base.html" %}
+
+{% block content %}
     <h1> List of Transactions</h1>
-</body>
-</html>
+    <small class="badge badge-pill badge-primary"> <a href="/transaction" > Go back</a></small>
+        <table class="table">
+            <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Date</th>
+                  <th scope="col"> Amount </th>
+                  <th scope="col"> Account Receiver </th>
+                </tr>
+              </thead>
+                {% for transaction in transactions %}
+
+                <tbody>
+                    <tr>
+                      <td>{{  transaction.transaction_id }}</td>
+                      <td> {{transaction.transaction_date}}</td>
+                      <td> DKK {{transaction.transaction_amount}}</td>
+                      <td> {{transaction.transaction_account_number_receiver}}</td>
+                    </tr>
+                </tbody>
+                  
+                {% endfor %}
+        </table>
+
+
+
+{% endblock %}
+
+
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">First</th>
+        <th scope="col">Last</th>
+        <th scope="col">Handle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">1</th>
+        <td>Mark</td>
+        <td>Otto</td>
+        <td>@mdo</td>
+      </tr>
