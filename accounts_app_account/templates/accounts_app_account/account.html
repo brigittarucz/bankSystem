@@ -1,0 +1,40 @@
+{% extends "transaction_app/base.html" %}
+
+
+
+{% block content %}
+    <h3> Account Overview</h3>
+    <p>Hello {{ user }}, here is your information: </p>
+    <small class="badge badge-pill badge-primary"> <a href="/" > Go back</a></small>
+
+    <div>
+        <p> Username: </p>
+        <p> Email: </p>
+        <p> Phone: </p>
+
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+              <th scope="col">Account Number</th>
+              <th scope="col">Account Balance</th>
+              <th scope="col"> Account Type </th>
+              <th scope="col">  </th>
+            </tr>
+          </thead>
+            {% for account in user_accounts %}
+            <tbody>
+                <tr>
+                  <td>{{  account.account_number }}</td>
+                  <td> DKK {{account.account_balance}}</td>
+                  <td> GOLD </td>
+                  <td> <a href=""> See more </a> </td>
+                </tr>
+            </tbody>
+            {% endfor %}
+        </ul>
+
+        
+    
+        
+{% endblock %}
