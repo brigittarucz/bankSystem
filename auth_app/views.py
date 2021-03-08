@@ -116,6 +116,7 @@ def signup(request):
                     print("Transaction failed")
                     pass
                 
+                # Todo: both login + signup pass session ID
                 # If it succeeds
                 context = {
                     'username': post_username
