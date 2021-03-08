@@ -5,29 +5,7 @@ from auth_app.models import Profile
 from accounts_app_account.models import Account
 from django.contrib.auth.models import User
 from django.db import transaction, DatabaseError
-
-from django import forms
-
-class CustomerFormCreate(forms.Form):
-    RANK_CHOICES = [
-        ('gold', 'Gold'),
-        ('silver', 'Silver'),
-        ('bronze', 'Bronze')
-    ]
-
-    username = forms.CharField(required=True)
-    first_name = forms.CharField(required=True)
-    last_name = forms.CharField(required=True)
-    email = forms.CharField(required=True)
-    customer_rank = forms.ChoiceField( choices=RANK_CHOICES)
-    customer_phone_number = forms.CharField(required=True, max_length=20)
-    customer_can_loan = forms.BooleanField(required=False, widget=forms.CheckboxInput)
-
-    class Meta:
-        fields = '__all__'
-    
-# Todo: extend CustomerFormCreate with id
-# id = forms.IntegerField(required=True)
+from .forms import CustomerFormCreateValidation, CustomerFormEditValidation
 
 
 def overview_customers(request):
@@ -46,6 +24,7 @@ def overview_customers(request):
 def edit_customer(request, customer_id):
     customer_id = int(customer_id)
     customer = Profile.objects.get(id=customer_id)
+    context = {}
 
     # GET method for populating form
     if request.method == 'GET':
@@ -60,40 +39,36 @@ def edit_customer(request, customer_id):
     # POST method for editing user
     if request.method == 'POST':
 
-        # Todo: Check if passwords match
-        customer.user.email = request.POST['email']
+        customerForm = CustomerFormEditValidation(request.POST)
+        if customerForm.is_valid():
+            # Todo: Check if passwords match
+            customer.user.email = request.POST['email']
 
-        customer.customer_rank = request.POST['customer_rank']
-        customer.customer_phone_number = request.POST['customer_phone_number']
-        customer.customer_can_loan = True if request.POST['customer_can_loan'] == 'on' else False
-        
-        try:
-            with transaction.atomic():
-                customer.save()
-                # # create_user() hashes the password
-                # user = User.objects.create_user(email = post_email, 
-                #                                 username = post_username, 
-                #                                 password = post_password, 
-                #                                 first_name = post_fname, 
-                #                                 last_name = post_lname)
-                # # create() does not hash 
-                # profile = Profile.objects.create(user = user, 
-                #                                 customer_rank = post_rank,
-                #                                 customer_phone_number = post_phone,
-                #                                 customer_token = '123token', 
-                #                                 customer_mfe = False, 
-                #                                 customer_can_loan = post_loan)
+            customer.customer_rank = request.POST['customer_rank']
+            customer.customer_phone_number = request.POST['customer_phone_number']
+            post_loan = request.POST.get('customer_can_loan', False)
+            post_loan = True if post_loan == 'on' else False
+            customer.customer_can_loan = post_loan
             
-            context = {
-                'customers': Profile.objects.all(),
-                'accounts': Account.objects.all(),
-                'edited_user': customer
-            }
+            try:
+                with transaction.atomic():
+                    customer.save()
+                
+                context = {
+                    'customers': Profile.objects.all(),
+                    'accounts': Account.objects.all(),
+                    'edited_user': customer
+                }
 
-            return render(request, 'employee_app/overview_customers.html', context)
-        except DatabaseError:
-            # Todo: print error message
-            return render(request, 'employee_app/create_customer.html')       
+                return render(request, 'employee_app/overview_customers.html', context)
+            except DatabaseError:
+                # Todo: print error message
+                return render(request, 'employee_app/create_customer.html')
+        else:
+            context = {
+                'customer': customer,
+                'customerFormErrors': customerForm
+            }      
             
 
     return render(request, 'employee_app/edit_customer.html', context)
@@ -103,7 +78,7 @@ def create_customer(request):
     context = {}
 
     if request.method == "POST":
-        customerForm = CustomerFormCreate(request.POST)
+        customerForm = CustomerFormCreateValidation(request.POST)
         if customerForm.is_valid():
             print()
             # Todo: Check if form valid & form fields not empty
