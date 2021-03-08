@@ -1,0 +1,25 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authenticate</title>
+</head>
+<body>
+    <h1> Authenticate </h1>
+    <nav>
+        <ul>
+            {% if not request.session.username %}
+            <li><a href="{% url 'auth_app:login' %}">Login</a></li>
+            <li><a href="{% url 'auth_app:signup' %}">Signup</a></li>
+            {% endif %}
+            {% if request.session.username %}
+            <li><a href="{% url 'auth_app:logout' %}">Logout</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+</body>
+</html>
