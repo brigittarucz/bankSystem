@@ -7,9 +7,16 @@ from .forms import SignupProfileForm, SignupUserForm, LoginForm
 from django.contrib.auth.models import User
 from .models import Profile
 from django.db import transaction, DatabaseError
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='/auth/login/')
 def dashboard(request):
     return render(request, 'auth_app/dashboard.html')
+
+def logout(request):
+    # Calls also flush() which removes session data
+    logoutUser(request)
+    return HttpResponseRedirect(reverse('auth_app:login'))
 
 def login(request):
     form = LoginForm(None)
@@ -20,7 +27,6 @@ def login(request):
     }
     
     # admin3 and test 
-    # superuser and validated1
     if request.method == "POST":
         loginForm = LoginForm(data=request.POST)
         if loginForm.is_valid():
@@ -28,11 +34,15 @@ def login(request):
             if userObject:
                 loginUser(request, userObject)
                 # Todo: get user rank
-                context = {
-                    'username': request.POST['username']
-                }
+                # context = {
+                #     'username': request.POST['username']
+                # }
                 # First / cleans up the URL clean following the paths in urls.py
-                return render(request, 'auth_app/dashboard.html', context)
+                # return render(request, 'auth_app/dashboard.html', context)
+
+                # The previous does not change route, we pass context in session
+                request.session['username'] = request.POST['username']
+                return HttpResponseRedirect(reverse('auth_app:dashboard'))
             else:
                 context = {
                     'form': form,
@@ -131,5 +141,4 @@ def signup(request):
 
 # Todo: logout & decorator login
 # Todo: admin view models enabled
-# Todo: navigation between login & signup
 # Todo: check routing for logging in url

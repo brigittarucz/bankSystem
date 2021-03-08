@@ -7,6 +7,8 @@
 </head>
 <body>
     <h1> Signup </h1>
+    <a href="{% url 'auth_app:login' %}">Go to login</a>
+    <hr>
     <form method="post">
         {% csrf_token %}
         {{ signup_user.as_p }}
