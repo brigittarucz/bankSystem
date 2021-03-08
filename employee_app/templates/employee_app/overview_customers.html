@@ -1,24 +1,16 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1> Main </h1>
-    <hr>
+{% extends './base.html' %}
+{% block content %}
+
+    <h3> All Customers </h3>
     <!-- Todo: check if new_user and edited_user exists -->
     <p>New user: {{ new_user }}</p>
     <p>Edited user: {{ edited_user }}</p>
     <hr>
-    <h3> All Customers </h3>
     {% for customer in customers %}
-        <hr/>
         {{ customer }} 
         <a href="/employee/edit_customer/{{customer.id}}"> Edit customer </a>
         <a href="/employee/edit_customer_account/{{customer.id}}"> Edit account </a>
-        <h4> Customer Accounts </h4>
+        <h4> Customer Accounts: </h4>
         {% for account in accounts %}
             {% if account.account_user_fk == customer.id %}
                 {{ account }}
@@ -27,5 +19,4 @@
         <hr/>
     {% endfor %}
 
-</body>
-</html>
+{% endblock %}

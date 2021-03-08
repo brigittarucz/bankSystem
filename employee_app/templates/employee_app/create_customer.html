@@ -1,12 +1,5 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1> Main </h1>
+{% extends './base.html' %}
+{% block content %}
 
     <h3> Create Customer </h3>
     <form action="{% url 'employee_app:create_customer' %}" method="POST">
@@ -28,5 +21,5 @@
         <button>Create Customer</button>
     </form>
     {{ customerFormErrors.errors }}
-</body>
-</html>
+
+{% endblock %}
