@@ -21,6 +21,6 @@ class Profile(models.Model):
     # Converts Python obj into strings
     def __str__(self):
         # Returning self would get an infinite loop
-        return f"{self.user}"
+        return f"{self.user} | {self.customer_phone_number} | {self.customer_rank} | { True if self.customer_can_loan else False}"
 
 
