@@ -139,6 +139,5 @@ def signup(request):
 # Migrations issues:
 # https://stackoverflow.com/questions/34548768/django-no-such-table-exception
 
-# Todo: logout & decorator login
 # Todo: admin view models enabled
 # Todo: check routing for logging in url
