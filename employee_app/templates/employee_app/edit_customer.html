@@ -8,7 +8,24 @@
 <body>
     <h1> Main </h1>
 
-    <h3> Edit Customers </h3>
-    {{ createCustomer.as_p }}
+    <h3> Edit Customer </h3>
+    <form action="{% url 'employee_app:edit_customer' customer.id %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="id" hidden value="{{ customer.id }}" />
+        <input type="text" name="username" disabled placeholder="Enter Username" value="{{ customer.user.username }}"/>
+        <input type="text" name="first_name" disabled placeholder="Enter First Name" value="{{ customer.user.first_name }}"/>
+        <input type="text" name="last_name" disabled placeholder="Enter Last Name" value="{{ customer.user.last_name }}"/>
+        <input type="email" name="email" placeholder="Enter Email" value="{{ customer.user.email }}" />
+        <select name="customer_rank">
+            <option value="bronze">Bronze</option>
+            <option value="silver">Silver</option>
+            <option value="gold">Gold</option>
+        </select>
+        <input type="number" name="customer_phone_number" placeholder="Phone Number" value="{{ customer.customer_phone_number }}" />
+        <label>Customer can loan:</label>
+        <input type="checkbox" name="customer_can_loan" {% if customer.customer_can_loan %} checked {% else %} '' {% endif %}>  
+        <button>Edit Customer</button>
+    </form>
+
 </body>
 </html>
