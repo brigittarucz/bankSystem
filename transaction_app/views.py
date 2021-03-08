@@ -16,10 +16,7 @@ from .models import Transaction
 
 
 
-# class transactionForm(forms.Form):
-#     model = Transaction
-#     account_receiver = forms.CharField(label='Account Receiver', max_length=100)
-#     ammount = forms.DecimalField(label='How much money would you like send?')
+
 
 
 def index(request):
