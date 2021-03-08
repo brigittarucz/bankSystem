@@ -34,7 +34,8 @@ def edit_customer(request, customer_id):
 def create_customer(request):
 
     if request.method == "POST":
-        # Todo: Check if form valid
+        # Todo: Check if form valid & form fields not empty
+        # Todo: Validate against existing username in DB
         post_username = request.POST['username']
         post_fname = request.POST['first_name'] 
         post_lname = request.POST['last_name']
@@ -59,13 +60,24 @@ def create_customer(request):
                                                 customer_token = '123token', 
                                                 customer_mfe = False, 
                                                 customer_can_loan = False)
-        # Test exception:
+            # Test exception:
             # if exception:
             #     raise exception
-        # Todo: render overview customers with context     
+
+            # Todo: render overview customers with context     
+            context = {
+                'customers': Profile.objects.all(),
+                'accounts': Account.objects.all(),
+                'new_user': user
+            }
+
+            return render(request, 'employee_app/overview_customers.html', context)
         except DatabaseError:
-            print(DatabaseError)
-            pass
+            # Todo: print error message
+            return render(request, 'employee_app/create_customer.html')
+            
+            # print(DatabaseError)
+            # pass
 
     return render(request, 'employee_app/create_customer.html')
 
