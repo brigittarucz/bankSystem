@@ -6,6 +6,30 @@ from accounts_app_account.models import Account
 from django.contrib.auth.models import User
 from django.db import transaction, DatabaseError
 
+from django import forms
+
+class CustomerFormCreate(forms.Form):
+    RANK_CHOICES = [
+        ('gold', 'Gold'),
+        ('silver', 'Silver'),
+        ('bronze', 'Bronze')
+    ]
+
+    username = forms.CharField(required=True)
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    email = forms.CharField(required=True)
+    customer_rank = forms.ChoiceField( choices=RANK_CHOICES)
+    customer_phone_number = forms.CharField(required=True, max_length=20)
+    customer_can_loan = forms.BooleanField(required=False, widget=forms.CheckboxInput)
+
+    class Meta:
+        fields = '__all__'
+    
+# Todo: extend CustomerFormCreate with id
+# id = forms.IntegerField(required=True)
+
+
 def overview_customers(request):
     # Todo: Add transactions and payments
     # Todo: Add in base.html employee navigation
@@ -14,7 +38,7 @@ def overview_customers(request):
         'accounts': Account.objects.all(),
     }
 
-    print(context)
+    # print(context)
 
     return render(request, 'employee_app/overview_customers.html', context)
 
@@ -76,54 +100,65 @@ def edit_customer(request, customer_id):
 
 def create_customer(request):
 
+    context = {}
+
     if request.method == "POST":
-        # Todo: Check if form valid & form fields not empty
-        # Todo: Validate against existing username in DB
-        post_username = request.POST['username']
-        post_fname = request.POST['first_name'] 
-        post_lname = request.POST['last_name']
-        # Todo: Check if passwords match
-        post_email = request.POST['email']
-        post_password = request.POST['password1']
-        post_rank = request.POST['customer_rank']
-        post_phone = request.POST['customer_phone_number']
-        post_loan = True if request.POST['customer_can_loan'] == 'on' else False
+        customerForm = CustomerFormCreate(request.POST)
+        if customerForm.is_valid():
+            print()
+            # Todo: Check if form valid & form fields not empty
+            # Todo: Validate against existing username in DB
+            post_username = request.POST['username']
+            post_fname = request.POST['first_name'] 
+            post_lname = request.POST['last_name']
+            # Todo: Check if passwords match
+            post_email = request.POST['email']
+            post_password = request.POST['password1']
+            post_rank = request.POST['customer_rank']
+            post_phone = request.POST['customer_phone_number']
+            post_loan = request.POST.get('customer_can_loan', False)
+            post_loan = True if post_loan == 'on' else False
+            # post_loan = True if request.POST['customer_can_loan'] == 'on' else False
 
-        try:
-            with transaction.atomic():
-                # create_user() hashes the password
-                user = User.objects.create_user(email = post_email, 
-                                                username = post_username, 
-                                                password = post_password, 
-                                                first_name = post_fname, 
-                                                last_name = post_lname)
-                # create() does not hash 
-                profile = Profile.objects.create(user = user, 
-                                                customer_rank = post_rank,
-                                                customer_phone_number = post_phone,
-                                                customer_token = '123token', 
-                                                customer_mfe = False, 
-                                                customer_can_loan = post_loan)
-            # Test exception:
-            # if exception:
-            #     raise exception
+            try:
+                with transaction.atomic():
+                    # create_user() hashes the password
+                    user = User.objects.create_user(email = post_email, 
+                                                    username = post_username, 
+                                                    password = post_password, 
+                                                    first_name = post_fname, 
+                                                    last_name = post_lname)
+                    # create() does not hash 
+                    profile = Profile.objects.create(user = user, 
+                                                    customer_rank = post_rank,
+                                                    customer_phone_number = post_phone,
+                                                    customer_token = '123token', 
+                                                    customer_mfe = False, 
+                                                    customer_can_loan = post_loan)
+                # Test exception:
+                # if exception:
+                #     raise exception
 
-            # Todo: render overview customers with context     
+                # Todo: render overview customers with context     
+                context = {
+                    'customers': Profile.objects.all(),
+                    'accounts': Account.objects.all(),
+                    'new_user': user
+                }
+
+                return render(request, 'employee_app/overview_customers.html', context)
+            except DatabaseError:
+                # Todo: print error message
+                return render(request, 'employee_app/create_customer.html')
+                
+                # print(DatabaseError)
+                # pass
+        else:
             context = {
-                'customers': Profile.objects.all(),
-                'accounts': Account.objects.all(),
-                'new_user': user
+                'customerFormErrors': customerForm
             }
 
-            return render(request, 'employee_app/overview_customers.html', context)
-        except DatabaseError:
-            # Todo: print error message
-            return render(request, 'employee_app/create_customer.html')
-            
-            # print(DatabaseError)
-            # pass
-
-    return render(request, 'employee_app/create_customer.html')
+    return render(request, 'employee_app/create_customer.html', context)
 
 def edit_customer_account(request, customer_account_id):
     return render("Works")
