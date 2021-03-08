@@ -11,6 +11,7 @@
     {% for customer in customers %}
         <hr/>
         {{ customer }} 
+        <a href="/employee/edit/{{customer.id}}"> Edit customer </a>
         <h4> Customer Accounts </h4>
         {% for account in accounts %}
             {% if account.account_user_fk == customer.id %}
