@@ -7,6 +7,12 @@
 </head>
 <body>
     <h1> Customer Management </h1>
+    <nav>
+        <ul>
+            <li><a href="{% url 'employee_app:overview_customers' %}">View All Customers</a></li>
+            <li><a href="{% url 'employee_app:create_customer' %}">Create New Customer</a></li>
+        </ul>
+    </nav>
 
     {% block content %}
     {% endblock %}
