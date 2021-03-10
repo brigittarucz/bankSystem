@@ -21,3 +21,10 @@ class Transaction(models.Model):
         # Returning string of the id
         return f"{self.transaction_id} - {self.transaction_date} - {self.transaction_account_number_sender}"
 
+
+class Loan(models.Model):
+
+    loan_account_fk = models.ForeignKey(Account, on_delete=models.PROTECT)
+    loan_description =  models.CharField(max_length=20, null=False)
+    loan_amount = models.DecimalField(decimal_places=2,max_digits=7, validators=[MinValueValidator(5.00)])
+    loan_date = models.DateTimeField(auto_now_add=True)

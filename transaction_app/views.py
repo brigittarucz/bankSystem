@@ -9,9 +9,10 @@ from django.utils.crypto import get_random_string
 #Utilities for messages
 from django.contrib import messages
 
-from django.db import transaction
-# from auth_app.models import Profile
+from django.db import transaction 
+
 from accounts_app_account.models import Account
+from auth_app.models import Profile
 from .models import Transaction
 
 
@@ -24,12 +25,17 @@ from .models import Transaction
 
 def index(request):
     # Dashboard/Page of transactions/loans
+    user = request.user
+    print(user.id)
+    # profile = Profile.objects.get(user=user)
+    
     return render(request, 'transaction_app/index.html')
 
 #Transactions view
 def transaction_view(request):
-    user = request.user
-    account = Account.objects.get(id=user.id)
+    user = request.user 
+    # profile = Profile.objects.get(user=user)
+    account = Account.objects.get(account_user_fk=user.id)
 
     # @transaction.atomic
     # Logic to get the balance from the current usery
@@ -75,7 +81,7 @@ def transaction_view(request):
 
 def transactions_view(request):
     user = request.user
-    account = Account.objects.get(id=user.id)
+    account = Account.objects.get(account_user_fk=user.id)
     transactions = Transaction.objects.filter(transaction_account_number_sender=account.account_number)
     current_user = request.user
     print(current_user) 
@@ -86,8 +92,27 @@ def transactions_view(request):
 def confirmation_view(request):
     # transaction = Transaction()
     user = request.user
-    account = Account.objects.get(id=user.id)
+    account = Account.objects.get(account_user_fk=user.id)
     user_transactions = Transaction.objects.filter(transaction_account_number_sender = account.account_number )
     latest_transaction = user_transactions.latest('transaction_date')
     context = { "latest_transaction" : latest_transaction}
     return render(request, 'transaction_app/confirmation.html', context)
+
+
+def loan_view(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    accounts = Account.objects.filter(account_user_fk=user.id)
+    if profile.customer_can_loan == False:
+        print('you are not allowed to apply for a Loan. Please contact our bank')
+
+    else: 
+        print('How much money do you need?')
+
+    context ={
+        "profile": profile,
+        "user": user,
+        "accounts": accounts
+    }
+    
+    return render(request, 'transaction_app/loan.html', context)
