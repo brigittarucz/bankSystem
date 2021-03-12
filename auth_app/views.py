@@ -117,7 +117,7 @@ def signup(request):
                         letters = string.digits
                         value = ( ''.join(random.choice(letters) for i in range(20)) )
                         account = Account.objects.create(
-                                                account_user_fk=user.id,
+                                                account_user_fk=profile,
                                                 account_number=value,
                                                 account_balance=0.00
 

@@ -3,11 +3,10 @@
 
 {% block content %}
 <small class="badge badge-pill badge-primary"> <a href="/transaction" > Go back</a></small>
-    <h1> Transaction Confirmed</h1>
+    <h1> Loan Confirmed</h1>
 
-    <p>  <b>  Transaction id: </b>  {{ latest_transaction.transaction_id }} </p>
-    <p>  <b> Transaction hour: </b>  {{latest_transaction.transaction_date}} </p>
-    <p>  <b> Transaction amount: </b>  DKK {{latest_transaction.transaction_amount}} </p>
+    <p>  <b>  Transaction id: </b>  {{ transaction.transaction_id}} </p>
+    <p>  <b> Transaction amount: </b>  DKK {{transaction.transaction_amount}} </p>
 
     <a href="/transaction/new"> New Transaction</a>
     <a href="/transaction/"> Transaction Menu</a>

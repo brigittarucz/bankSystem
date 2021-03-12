@@ -7,16 +7,17 @@
             <thead>
                 <tr>
                   <th scope="col">ID</th>
+                  <th scope="col">Number Account Sender</th>
                   <th scope="col">Date</th>
                   <th scope="col"> Amount </th>
-                  <th scope="col"> Account Receiver </th>
+                  <th scope="col"> Number Account Receiver </th>
                 </tr>
               </thead>
-                {% for transaction in transactions %}
-
+                {% for transaction in arrayTransaction %}
                 <tbody>
                     <tr>
                       <td>{{  transaction.transaction_id }}</td>
+                      <td>{{  transaction.transaction_account_number_sender }}</td>
                       <td> {{transaction.transaction_date}}</td>
                       <td> DKK {{transaction.transaction_amount}}</td>
                       <td> {{transaction.transaction_account_number_receiver}}</td>

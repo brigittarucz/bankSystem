@@ -2,23 +2,48 @@
 
 {% block content%}
 
-{% if profile.customer_can_loan == True %}
-<h3 class='mb-4'> Hi {{user}}. Please fill out the following form to request your loan</h3>
-<form>
-    
 
+
+
+{% if profile.customer_rank == 'bronze' %}
+<div class="alert alert-warning" role="alert">
+    You do not have the requirements to apply for a loan. Please contact us for more information.
+  </div>
+{% elif profile.customer_can_loan == False  %}
+<div class="alert alert-danger" role="alert">
+  You already have a current Loan. Please cancel it before reqeuest another one
+</div>
+
+<form method='POST'>
+{% csrf_token %}
+<p>Your current Loan ID: <b> {{loan.loan_id}} </b> </p>
+<p> Loan date granted: <b> {{loan.loan_date}} </b> </p>
+<p>Total loan amount: <b> {{loan.loan_amount}} </b> </p>
+<hr>
+<p> Remaining amount payable: <b style='color: red'> {{ loan.loan_remain}}</b> </p>
+
+
+<a class="btn btn-outline-success mt-4" href='/transaction/payment'> Pay my loan</a>
+</form>
+
+
+
+
+{% else %}
+<h3 class='mb-4'> Hi {{user}}. Please fill out the following form to request your loan</h3>
+<form method='POST'>
+  {% csrf_token %}
     <div class="form-group">
-      <label for="exampleFormControlSelect1"> In which account do you want your money?</label>
-      <select class="form-control" id="exampleFormControlSelect1">
+      <label for="account_number"> In which account do you want your money?</label>
+      <select class="form-control" name='account_number' id="account_number">
         {% for account in accounts %}
         <option>{{account.account_number}}</option>
         {% endfor %}
-    
       </select>
     </div>
     <div class="form-group mt-4">
-      <label for="exampleFormControlSelect2"> How much money do you need? </label>
-      <select  class="form-control" id="exampleFormControlSelect2">
+      <label for="total_amount"> How much money do you need? </label>
+      <select  class="form-control" name='total_amount' id="total_amount">
         <option>1000</option>
         <option>5000</option>
         <option>10000</option>
@@ -26,16 +51,13 @@
       </select>
     </div>
     <div class="form-group mt-4">
-      <label for="exampleFormControlTextarea1">Please briefly describe here what you will use the money for </label>
-      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+      <label for="loan_description">Please briefly describe here what you will use the money for </label>
+      <textarea class="form-control" name='loan_description' id="loan_description" rows="3"></textarea>
     </div>
 
-    <button class='mt-4 btn btn-primary btn-center'> Submit Loan</button>
+    <button type='submit' class='mt-4 btn btn-primary btn-center'> Submit Loan</button>
   </form>
-{% else %}
-<div class="alert alert-warning" role="alert">
-    You do not have the requirements to apply for a loan. Please contact us for more information.
-  </div>
+
 {% endif %}
 
 {% endblock %}
