@@ -4,24 +4,32 @@
     <h1> New Transaction </h1>
     
     <small class="badge badge-pill badge-primary"> <a href="/transaction" > Go back</a></small>
-    Your current balance: <b>  {{ account.account_balance }} </b>
+    
     <br> 
     <form  action='.' method="POST">
         <br> 
             {% csrf_token %}
-            {% if messages %} {{ message }}
-            {% endif %}
-            <div class="form-group">
-              <label for="receiver">Account Number of the receiver</label>
-              <input type="text" name='receiver' class="form-control" id="receiver"  placeholder="Enter a valid account number">
-              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            <div class="form-group mb-3">
+              <label for="account_number"> From which account do you like send the money?</label>
+              <select class="form-control" name='account_number_sender' id="account_number">
+                <option> </option>
+                {% for account in accounts %}
+                <option> {{account.account_number}} </option>
+                {% endfor %}
+              </select>
             </div>
-            <div class="form-group mt-3">
-              <label for="amount">Amount</label>
-              <input type="text" class="form-control" name='amount' id="amount" placeholder="Enter how much money do you like to send.">
-            </div>
+            <div class="form-group mt-3" >
+                <label for="receiver">Account Number of the receiver</label>
+                <input type="text" name='receiver' class="form-control" id="receiver"  placeholder="Enter a valid account number">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              </div>
+              <div class="form-group mt-3">
+                <label for="amount">Amount</label>
+                <input type="text" class="form-control" name='amount' id="amount" placeholder="Enter how much money do you like to send.">
+              </div>
+              
+              <button type="submit" class="btn btn-primary mt-3"> Send Money</button>
             
-            <button type="submit" class="btn btn-primary mt-3"> Send Money</button>
-          
+              
     </form>
     {% endblock  %}

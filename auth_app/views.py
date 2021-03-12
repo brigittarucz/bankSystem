@@ -8,6 +8,10 @@ from django.contrib.auth.models import User
 from .models import Profile
 from django.db import transaction, DatabaseError
 from django.contrib.auth.decorators import login_required
+from accounts_app_account.models import Account
+
+import random
+import string
 
 @login_required(login_url='/auth/login/')
 def dashboard(request):
@@ -109,6 +113,15 @@ def signup(request):
                                                 customer_token = '123token', 
                                                 customer_mfe = post_mfe, 
                                                 customer_can_loan = False)
+                        
+                        letters = string.digits
+                        value = ( ''.join(random.choice(letters) for i in range(20)) )
+                        account = Account.objects.create(
+                                                account_user_fk=profile,
+                                                account_number=value,
+                                                account_balance=0.00
+
+                        )
                         # Test exception:
                         # if exception:
                         #     raise exception

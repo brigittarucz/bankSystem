@@ -4,13 +4,13 @@
 
 {% block content %}
     <h3> Account Overview</h3>
-    <p>Hello {{ user }}, here is your information: </p>
-    <small class="badge badge-pill badge-primary"> <a href="/" > Go back</a></small>
+    <p>Hello <b>  {{ user }} </b> , here is your information: </p>
+    <small class="badge badge-pill badge-primary"> <a href="/auth/dashboard" > Go dashboard</a></small>
 
     <div>
-        <p> Username: </p>
-        <p> Email: </p>
-        <p> Phone: </p>
+        <p> <b> Username:</b> {{user.first_name}} </p>
+        <p> <b> Email: </b>  {{user.email}}</p>
+        <p> <b> Phone: </b> {{customer.customer_phone_number}} </p>
 
     </div>
     <table class="table">
@@ -27,7 +27,7 @@
                 <tr>
                   <td>{{  account.account_number }}</td>
                   <td> DKK {{account.account_balance}}</td>
-                  <td> GOLD </td>
+                  <td> {{customer.customer_rank}} </td>
                   <td> <a href=""> See more </a> </td>
                 </tr>
             </tbody>

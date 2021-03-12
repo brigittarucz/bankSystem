@@ -1,0 +1,29 @@
+{% extends "transaction_app/base.html" %}
+
+{% block content%}
+<h2> Loan Payment</h2>
+
+<h4 class='mt-3'> You still need to pay the amount of:  <b style='color:red'> DKK  {{ loan.loan_remain }} </b></h4>
+<form class='mt-5' method='POST'>
+    {% csrf_token %}
+      <div class="form-group mt-3" >
+        <label for="amount"> How much money would you like to pay?</label>
+        <input type="text" name='amount' class="form-control" id="amount"  placeholder="Enter a valid amount">
+        <small id="emailHelp" class="form-text text-muted">Remember that until you finish paying this loan, you will not be able to apply for another.</small>
+      </div>
+      <div class="form-group mt-3 mb-3">
+        <label for="account_number"> From which account do you like send the money?</label>
+        <select class="form-control" name='account_number' id="account_number">
+          <option> </option>
+          {% for account in accounts %}
+          <option> {{account.account_number}} </option>
+          {% endfor %}
+        </select>
+      </div>
+      
+  
+      <button type='submit' class='mt-4 btn  btn-success'> Pay Loan</button>
+    </form>
+
+
+{% endblock %}
