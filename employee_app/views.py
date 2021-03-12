@@ -18,23 +18,23 @@ def overview_customers(request):
 
     # print(context)
 
-    return render(request, 'employee_app/overview_customers.html')
+    return render(request, 'employee_app/overview_customers.html', context)
 
 
 def edit_customer(request, customer_id):
     customer_id = int(customer_id)
-    customer = Profile.objects.get(id=customer_id)
     context = {}
 
     # GET method for populating form
     if request.method == 'GET':
         try:
+            customer = Profile.objects.get(id=customer_id)
             context = {
                 'customer': customer
             }
         except Profile.DoesNotExist:
             # Todo: Add context with errors
-            return render(request, 'employee_app/overview_customers.html')
+            return overview_customers(request)
 
     # POST method for editing user
     if request.method == 'POST':
@@ -135,8 +135,26 @@ def create_customer(request):
 
     return render(request, 'employee_app/create_customer.html', context)
 
-def edit_customer_account(request, customer_account_id):
-    return render("Works")
+def edit_customer_account(request, customer_id, customer_account_id):
+    customer_id = int(customer_id)
+    account_id = int(customer_account_id)
+    context = {}
+
+    # GET method for populating form
+    if request.method == 'GET':
+        try:
+            customer = Profile.objects.get(id=customer_id)
+            account = Account.objects.get(id=account_id)
+            context = {
+                'customer': customer,
+                'account': account
+            }
+        # Multiple exceptions are handled in a tuple
+        except (Profile.DoesNotExist, Account.DoesNotExist):
+            # Todo: Add context with errors
+            return overview_customers(request)
+
+    return render(request, 'employee_app/edit_customer_account.html', context)
 
 def create_customer_account(request):
     return render("Works")

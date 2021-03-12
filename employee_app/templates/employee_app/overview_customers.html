@@ -9,10 +9,11 @@
     {% for customer in customers %}
         {{ customer }} 
         <a href="/employee/edit_customer/{{customer.id}}"> Edit customer </a>
-        <a href="/employee/edit_customer_account/{{customer.id}}"> Edit account </a>
         <h4> Customer Accounts: </h4>
         {% for account in accounts %}
-            {% if account.account_user_fk == customer.id %}
+        {% if account.account_user_fk == customer %}
+        <!-- Todo: Add manage loans / payments -->
+        <a href="/employee/edit_customer_account/{{customer.id}}/{{account.id}}"> Edit account </a>
                 {{ account }}
             {% endif %}
         {% endfor %}
