@@ -18,7 +18,7 @@ def overview_customers(request):
 
     # print(context)
 
-    return render(request, 'employee_app/overview_customers.html', context)
+    return render(request, 'employee_app/overview_customers.html')
 
 
 def edit_customer(request, customer_id):

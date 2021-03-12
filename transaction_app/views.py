@@ -18,11 +18,6 @@ from .models import Loan
 
 
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> origin/accounts_app_v2
 
 def index(request):
     # Dashboard/Page of transactions/loans

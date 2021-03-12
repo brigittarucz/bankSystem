@@ -129,13 +129,15 @@ def signup(request):
                     print("Transaction failed")
                     pass
                 
-                # Todo: both login + signup pass session ID
                 # If it succeeds
-                context = {
-                    'username': post_username
-                }
+                # context = {
+                #     'username': post_username
+                # }
 
-                return render(request, 'auth_app/dashboard.html', context)
+                # Needed for redirection
+                request.session['username'] = post_username
+                loginUser(request, authenticate(request, username=post_username, password=post_password))
+                return HttpResponseRedirect(reverse('auth_app:dashboard'))
             
             else: 
                 context = {
@@ -147,7 +149,7 @@ def signup(request):
                 'signup_user': signupForm,
                 'profile_user': profile_user
             }
-
+    print("goes until here")
     return render(request, 'auth_app/signup.html', context)
 
 # Migrations issues:
