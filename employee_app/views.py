@@ -5,8 +5,12 @@ from auth_app.models import Profile
 from accounts_app_account.models import Account
 from django.contrib.auth.models import User
 from django.db import transaction, DatabaseError
-from .forms import CustomerFormCreateValidation, CustomerFormEditValidation
+from .forms import CustomerFormCreateValidation, CustomerFormEditValidation, AccountFormCreateValidation
 from transaction_app.models import Loan, Transaction
+
+
+import random
+import string
 
 def overview_customers(request):
     # Todo: Add transactions and payments
@@ -183,4 +187,31 @@ def edit_customer_account(request, customer_id, customer_account_id):
     return render(request, 'employee_app/edit_customer_account.html', context)
 
 def create_customer_account(request):
-    return render("Works")
+    if request.method == 'GET':
+        context = {
+            'customers': Profile.objects.all()
+        }
+
+    if request.method == 'POST':
+        try:
+            customer = Profile.objects.get(id=request.POST['account_user_fk'])
+            accountForm = AccountFormCreateValidation(request.POST)
+            print(accountForm)
+            if accountForm.is_valid():
+                try:
+                    letters = string.digits
+                    value = ( ''.join(random.choice(letters) for i in range(20)) )
+                    account = Account.objects.create(
+                                    account_user_fk=customer,
+                                    account_number=value,
+                                    account_balance=request.POST['account_balance']              
+                    )
+                    return overview_customers(request)
+                except DatabaseError:
+                    # Todo: Print error message
+                    return render(request, 'employee_app/create_customer_account.html', context)
+        except Profile.DoesNotExist:
+            # Todo: Print error message
+            return render(request, 'employee_app/create_customer_account.html', context)   
+
+    return render(request, 'employee_app/create_customer_account.html', context)

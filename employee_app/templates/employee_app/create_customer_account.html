@@ -1,0 +1,18 @@
+{% extends './base.html' %}
+{% block content %}
+
+    <h3> Create Customer Account </h3>
+    <form action="{% url 'employee_app:create_customer_account' %}" method="POST">
+        {% csrf_token %}
+        <select name='account_user_fk'>
+            {% for customer in customers %}
+            <option value={{customer.id}}>{{customer.id}} {{customer.user.first_name}} {{customer.user.last_name}}</option>
+            {% endfor %}
+        </select>
+        <!-- Todo: autogenerate -->
+        <input type="number" name="account_balance" placeholder="Enter Account Balance" />
+        <button>Create Customer Account</button>
+    </form>
+    {{ customerFormErrors.errors }}
+
+{% endblock %}

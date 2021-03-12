@@ -3,9 +3,15 @@
 
     <h3> All Customers </h3>
     <!-- Todo: check if new_user and edited_user exists -->
+    {% if new_user %}
     <p>New user: {{ new_user }}</p>
+    {% endif %}
+    {% if edited_user %}
     <p>Edited user: {{ edited_user }}</p>
+    {% endif %}
+    {% if edited_account %}
     <p>Edited account: {{ edited_account }}</p>
+    {% endif %}
     <hr>
     {% for customer in customers %}
         {{ customer }} 

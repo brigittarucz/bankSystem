@@ -39,6 +39,9 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'employee_app:create_customer' %}">Create New Customer</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'employee_app:create_customer_account' %}">Create New Customer Account</a>
+          </li>
           {% if request.session.username %}
           <li class="nav-item">
               <a class="nav-link" href="{% url 'auth_app:logout' %}">Logout</a>
