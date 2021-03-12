@@ -21,7 +21,9 @@ class Transaction(models.Model):
         # Returning string of the id
         return f"{self.transaction_id} - {self.transaction_date} - {self.transaction_account_number_sender}"
 
-
+# Bug found: If I want to pay more money than I have to on my loan
+# Bug found: Account balanace can go negative ( guess it's for testing purposes )
+# What is loan_remain? The amount paid?
 class Loan(models.Model):
 
     loan_account_fk = models.ForeignKey(Profile, on_delete=models.PROTECT)
@@ -30,7 +32,7 @@ class Loan(models.Model):
     loan_amount = models.DecimalField(decimal_places=2,max_digits=7, validators=[MinValueValidator(5.00)])
     loan_date = models.DateTimeField(auto_now_add=True)
     loan_remain = models.DecimalField(decimal_places=2,max_digits=7, validators=[MinValueValidator(5.00)])
-    
+
     def is_ongoing(self):
         return 1 if self.loan_amount - self.loan_remain == 0 else 0
 

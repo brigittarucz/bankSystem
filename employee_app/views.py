@@ -6,7 +6,7 @@ from accounts_app_account.models import Account
 from django.contrib.auth.models import User
 from django.db import transaction, DatabaseError
 from .forms import CustomerFormCreateValidation, CustomerFormEditValidation
-
+from transaction_app.models import Loan, Transaction
 
 def overview_customers(request):
     # Todo: Add transactions and payments
@@ -138,16 +138,27 @@ def create_customer(request):
 def edit_customer_account(request, customer_id, customer_account_id):
     customer_id = int(customer_id)
     account_id = int(customer_account_id)
+    # Todo: add payments
     context = {}
+
+    # myLoanUsername
+    # mypassword123
 
     # GET method for populating form
     if request.method == 'GET':
         try:
             customer = Profile.objects.get(id=customer_id)
             account = Account.objects.get(id=account_id)
+            loans = Loan.objects.filter(loan_account_fk=customer)
+            transactions = Transaction.objects.filter(transaction_user_account_fk=account)
+            # Lambda is the anonymous fc equiv. in python
+            # List() is necessary due to list comprehensions and python3.x
             context = {
                 'customer': customer,
-                'account': account
+                'account': account,
+                'transactions': transactions,
+                'loansFinished': list(filter(lambda x: x.is_ongoing() == 0, loans)),
+                'loansOngoing': list(filter(lambda x: x.is_ongoing() == 1, loans))
             }
         # Multiple exceptions are handled in a tuple
         except (Profile.DoesNotExist, Account.DoesNotExist):
