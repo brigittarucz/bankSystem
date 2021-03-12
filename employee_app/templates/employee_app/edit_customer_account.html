@@ -22,7 +22,7 @@
         {% for transaction in transactions %}
         <p>Date: {{ transaction.transaction_date }} | Amount: {{ transaction.transaction_amount }} | Currency: {{ transaction.transaction_currency }} | Receiver: {{ transaction.transaction_account_number_receiver }}</p>
         {% endfor %}
-        <button>Edit Customer Account</button> 
+        <button>Edit Balance</button> 
     </form>
 
     {{ customerFormErrors.errors }}

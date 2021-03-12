@@ -8,5 +8,5 @@ class Account(models.Model):
 
     def __str__(self):
         # Returning string of the id
-        return f"Number {self.account_number} - Name:{self.account_user_fk}"
+        return f"Number {self.account_number} - Name:{self.account_user_fk} - Balance: {self.account_balance}"
 

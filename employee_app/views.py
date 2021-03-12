@@ -24,21 +24,20 @@ def overview_customers(request):
 def edit_customer(request, customer_id):
     customer_id = int(customer_id)
     context = {}
-
-    # GET method for populating form
-    if request.method == 'GET':
-        try:
-            customer = Profile.objects.get(id=customer_id)
-            context = {
-                'customer': customer
-            }
-        except Profile.DoesNotExist:
+    try:
+        customer = Profile.objects.get(id=customer_id)
+    except Profile.DoesNotExist:
             # Todo: Add context with errors
             return overview_customers(request)
 
+    # GET method for populating form
+    if request.method == 'GET':
+        context = {
+            'customer': customer
+        }
+
     # POST method for editing user
     if request.method == 'POST':
-
         customerForm = CustomerFormEditValidation(request.POST)
         if customerForm.is_valid():
             # Todo: Check if passwords match
@@ -143,27 +142,43 @@ def edit_customer_account(request, customer_id, customer_account_id):
 
     # myLoanUsername
     # mypassword123
+    try:
+        customer = Profile.objects.get(id=customer_id)
+        account = Account.objects.get(id=account_id)
+        loans = Loan.objects.filter(loan_account_fk=customer)
+        transactions = Transaction.objects.filter(transaction_user_account_fk=account)
+    # Multiple exceptions are handled in a tuple
+    except (Profile.DoesNotExist, Account.DoesNotExist):
+        # Todo: Add context with errors
+         return overview_customers(request)
 
     # GET method for populating form
     if request.method == 'GET':
-        try:
-            customer = Profile.objects.get(id=customer_id)
-            account = Account.objects.get(id=account_id)
-            loans = Loan.objects.filter(loan_account_fk=customer)
-            transactions = Transaction.objects.filter(transaction_user_account_fk=account)
-            # Lambda is the anonymous fc equiv. in python
-            # List() is necessary due to list comprehensions and python3.x
-            context = {
-                'customer': customer,
-                'account': account,
-                'transactions': transactions,
-                'loansFinished': list(filter(lambda x: x.is_ongoing() == 0, loans)),
-                'loansOngoing': list(filter(lambda x: x.is_ongoing() == 1, loans))
-            }
-        # Multiple exceptions are handled in a tuple
-        except (Profile.DoesNotExist, Account.DoesNotExist):
-            # Todo: Add context with errors
-            return overview_customers(request)
+        # Lambda is the anonymous fc equiv. in python
+        # List() is necessary due to list comprehensions and python3.x
+        context = {
+            'customer': customer,
+            'account': account,
+            'transactions': transactions,
+            'loansFinished': list(filter(lambda x: x.is_ongoing() == 0, loans)),
+            'loansOngoing': list(filter(lambda x: x.is_ongoing() == 1, loans))
+        }
+
+    # POST method for modifying balance
+    if request.method == 'POST':
+        post_balance = request.POST['account_balance']
+
+        # Todo: validate post_balance
+        account.account_balance = post_balance
+        account.save()
+
+        context = {
+            'customers': Profile.objects.all(),
+            'accounts': Account.objects.all(),
+            'edited_account': account
+        }
+
+        return render(request, 'employee_app/overview_customers.html', context)
 
     return render(request, 'employee_app/edit_customer_account.html', context)
 
