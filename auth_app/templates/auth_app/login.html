@@ -1,6 +1,9 @@
 {% extends './base.html' %}
-{% block content %}
 
+{% block content %}
+    {% if request.path == '/auth/login/' %}
+    <h3 class="mb-5">Welcome to Bank Customer Login</h3>
+    <p><b>Are you an employee? Go to employee login <a href="{% url 'employee_app:employee_login' %}">here</a></b></p>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
@@ -8,5 +11,15 @@
         {{ error }}
         <button type="submit">Log In</button>
     </form>
-
+    {% else %}
+    <h3 class="mb-5">Welcome to Bank Employee Login</h3>
+    <p><b>Are you an customer? Go to customer login <a href="{% url 'auth_app:login' %}">here</a></b></p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ form.errors }}
+        {{ error }}
+        <button type="submit">Log In</button>
+    </form>
+{% endif %}
 {% endblock %}

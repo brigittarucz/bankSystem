@@ -1,13 +1,27 @@
 {% extends './base.html' %}
+
 {% block content %}
-
-    <form method="post">
-        {% csrf_token %}
-        {{ signup_user.as_p }}
-        {{ profile_user.as_p }}
-        {{ signup_user.errors }}
-        {{ profile_user.errors }}
-        <button type="submit">Sign Up</button>
-    </form>
-
+    {% if request.path == '/auth/signup/' %}
+        <h3 class="mb-5">Welcome to Bank Customer Signup</h3>
+        <p><b>Are you an employee? Go to employee signup <a href="{% url 'employee_app:employee_signup' %}">here</a></b></p>
+        <form method="post">
+            {% csrf_token %}
+            {{ signup_user.as_p }}
+            {{ profile_user.as_p }}
+            {{ signup_user.errors }}
+            {{ profile_user.errors }}
+            <button type="submit">Sign Up</button>
+        </form>
+    {% else %}
+        <h3 class="mb-5">Welcome to Bank Customer Singnup</h3>
+        <p><b>Are you an customer? Go to customer signup <a href="{% url 'auth_app:signup' %}">here</a></b></p>
+        <form method="post">
+            {% csrf_token %}
+            {{ signup_user.as_p }}
+            {{ profile_user.as_p }}
+            {{ signup_user.errors }}
+            {{ profile_user.errors }}
+            <button type="submit">Sign Up</button>
+        </form>
+    {% endif %}
 {% endblock %}

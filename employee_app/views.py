@@ -8,9 +8,11 @@ from django.db import transaction, DatabaseError
 from .forms import CustomerFormCreateValidation, CustomerFormEditValidation, AccountFormCreateValidation
 from transaction_app.models import Loan, Transaction
 
-
 import random
 import string
+
+def employee_signup(request):
+    return render(request, 'auth_app/signup.html')
 
 def overview_customers(request):
     # Todo: Add transactions and payments
