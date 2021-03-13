@@ -45,6 +45,8 @@ def login(request):
                 # return render(request, 'auth_app/dashboard.html', context)
 
                 # The previous does not change route, we pass context in session
+                user = User.objects.get(username=userObject)
+                request.session['is_staff'] = user.is_staff
                 request.session['username'] = request.POST['username']
                 return HttpResponseRedirect(reverse('auth_app:dashboard'))
             else:
@@ -135,6 +137,8 @@ def signup(request):
                 # }
 
                 # Needed for redirection
+                user = User.objects.get(username=post_username)
+                request.session['is_staff'] = user.is_staff
                 request.session['username'] = post_username
                 loginUser(request, authenticate(request, username=post_username, password=post_password))
                 return HttpResponseRedirect(reverse('auth_app:dashboard'))
