@@ -7,13 +7,12 @@ from django.contrib.auth.models import User
 from django.db import transaction, DatabaseError
 from .forms import CustomerFormCreateValidation, CustomerFormEditValidation, AccountFormCreateValidation
 from transaction_app.models import Loan, Transaction
+from django.contrib.admin.views.decorators import staff_member_required
 
 import random
 import string
 
-def employee_signup(request):
-    return render(request, 'auth_app/signup.html')
-
+@staff_member_required
 def overview_customers(request):
     # Todo: Add transactions and payments
     # Todo: Add in base.html employee navigation
@@ -26,7 +25,7 @@ def overview_customers(request):
 
     return render(request, 'employee_app/overview_customers.html', context)
 
-
+@staff_member_required
 def edit_customer(request, customer_id):
     customer_id = int(customer_id)
     context = {}
@@ -78,6 +77,7 @@ def edit_customer(request, customer_id):
 
     return render(request, 'employee_app/edit_customer.html', context)
 
+@staff_member_required
 def create_customer(request):
 
     context = {}
@@ -140,6 +140,7 @@ def create_customer(request):
 
     return render(request, 'employee_app/create_customer.html', context)
 
+@staff_member_required
 def edit_customer_account(request, customer_id, customer_account_id):
     customer_id = int(customer_id)
     account_id = int(customer_account_id)
@@ -188,6 +189,7 @@ def edit_customer_account(request, customer_id, customer_account_id):
 
     return render(request, 'employee_app/edit_customer_account.html', context)
 
+@staff_member_required
 def create_customer_account(request):
     if request.method == 'GET':
         context = {
