@@ -9,7 +9,7 @@ from .models import Profile
 from django.db import transaction, DatabaseError
 from django.contrib.auth.decorators import login_required
 from accounts_app_account.models import Account
-
+from django.urls import resolve
 import random
 import string
 
@@ -76,6 +76,9 @@ def signup(request):
         'profile_user': profile_user
     }
 
+    # current_url = resolve(request.path_info).url_name
+    # print(current_url)
+
     if request.method == "POST":
         # This:
         # print(request.POST)
@@ -97,17 +100,26 @@ def signup(request):
                 post_mfe = True if post_mfe == 'on' else False
                 # post_mfe = True if request.POST['customer_mfe'] == 'on' else False
 
-                exception = True
-
+                # exception = True
+                current_url = resolve(request.path_info).url_name
                 # Transactions: https://django.cowhite.com/blog/customizing-user-details-user-models-and-authentication/
                 try:
                     with transaction.atomic():
                         # create_user() hashes the password
-                        user = User.objects.create_user(email = post_email, 
-                                                        username = post_username, 
-                                                        password = post_password, 
-                                                        first_name = post_fname, 
-                                                        last_name = post_lname)
+                        if(current_url == 'signup'):
+                            user = User.objects.create_user(email = post_email, 
+                                                            username = post_username, 
+                                                            password = post_password, 
+                                                            first_name = post_fname, 
+                                                            last_name = post_lname)
+                        else:
+                            user = User.objects.create_user(email = post_email, 
+                                                            username = post_username, 
+                                                            password = post_password, 
+                                                            first_name = post_fname, 
+                                                            last_name = post_lname,
+                                                            is_staff = True)
+
                         # create() does not hash 
                         profile = Profile.objects.create(user = user, 
                                                 customer_rank = 'bronze',
@@ -153,7 +165,6 @@ def signup(request):
                 'signup_user': signupForm,
                 'profile_user': profile_user
             }
-    print("goes until here")
     return render(request, 'auth_app/signup.html', context)
 
 # Migrations issues:
