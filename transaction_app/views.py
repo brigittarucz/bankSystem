@@ -10,15 +10,17 @@ from django.utils.crypto import get_random_string
 from django.contrib import messages
 
 from django.db import transaction 
+# from django.utils.decorators import decorator_from_middleware
 
 from accounts_app_account.models import Account
 from auth_app.models import Profile
 from .models import Transaction
 from .models import Loan
 
+# from ipfilter_middleware.middleware import IPFilterMiddleware
 
 
-
+# @decorator_from_middleware(IPFilterMiddleware)
 def index(request):
     # Dashboard/Page of transactions/loans
     
@@ -110,7 +112,6 @@ def confirmation_view(request):
 
 
 def loan_payment(request):
-    user = request.user
     user = request.user
     profile = Profile.objects.get(user=user)
     accounts = Account.objects.filter(account_user_fk=profile)
