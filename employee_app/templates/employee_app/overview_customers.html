@@ -1,0 +1,30 @@
+{% extends "auth_app/base.html" %}
+{% block content %}
+
+    <h3> All Customers </h3>
+    <!-- Todo: check if new_user and edited_user exists -->
+    {% if new_user %}
+    <p>New user: {{ new_user }}</p>
+    {% endif %}
+    {% if edited_user %}
+    <p>Edited user: {{ edited_user }}</p>
+    {% endif %}
+    {% if edited_account %}
+    <p>Edited account: {{ edited_account }}</p>
+    {% endif %}
+    <hr>
+    {% for customer in customers %}
+        {{ customer }} 
+        <a href="/employee/edit_customer/{{customer.id}}"> Edit customer </a>
+        <h4> Customer Accounts: </h4>
+        {% for account in accounts %}
+        {% if account.account_user_fk == customer %}
+        <!-- Todo: Add manage loans / payments -->
+        <a href="/employee/edit_customer_account/{{customer.id}}/{{account.id}}"> Edit account </a>
+                {{ account }}
+            {% endif %}
+        {% endfor %}
+        <hr/>
+    {% endfor %}
+
+{% endblock %}

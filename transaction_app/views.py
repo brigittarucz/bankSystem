@@ -163,7 +163,8 @@ def loan_view(request):
     user = request.user
     profile = Profile.objects.get(user=user)
     accounts = Account.objects.filter(account_user_fk=profile)
-    loan = Loan.objects.filter(loan_account_fk=profile).latest('loan_date')
+    print(profile)
+    loan = Loan.objects.filter(loan_account_fk=profile)
     
         
         
@@ -213,9 +214,8 @@ def loan_view(request):
         "profile": profile,
         "user": user,
         "accounts": accounts,
-        "loan":loan
+        "loan": Loan.objects.get(loan_account_fk=profile)
     }
-    
     return render(request, 'transaction_app/loan.html', context)
 
 

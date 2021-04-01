@@ -1,21 +1,27 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1> Signup </h1>
-    <a href="{% url 'auth_app:login' %}">Go to login</a>
-    <hr>
-    <form method="post">
-        {% csrf_token %}
-        {{ signup_user.as_p }}
-        {{ profile_user.as_p }}
-        {{ signup_user.errors }}
-        {{ profile_user.errors }}
-        <button type="submit">Sign Up</button>
-    </form>
-</body>
-</html>
+{% extends './base.html' %}
+
+{% block content %}
+    {% if request.path == '/auth/signup/' %}
+        <h3 class="mb-5">Welcome to Bank Customer Signup</h3>
+        <p><b>Are you an employee? Go to employee signup <a href="{% url 'employee_app:employee_signup' %}">here</a></b></p>
+        <form method="post">
+            {% csrf_token %}
+            {{ signup_user.as_p }}
+            {{ profile_user.as_p }}
+            {{ signup_user.errors }}
+            {{ profile_user.errors }}
+            <button type="submit">Sign Up</button>
+        </form>
+    {% else %}
+        <h3 class="mb-5">Welcome to Bank Customer Singnup</h3>
+        <p><b>Are you an customer? Go to customer signup <a href="{% url 'auth_app:signup' %}">here</a></b></p>
+        <form method="post">
+            {% csrf_token %}
+            {{ signup_user.as_p }}
+            {{ profile_user.as_p }}
+            {{ signup_user.errors }}
+            {{ profile_user.errors }}
+            <button type="submit">Sign Up</button>
+        </form>
+    {% endif %}
+{% endblock %}

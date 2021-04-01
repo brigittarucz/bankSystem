@@ -9,7 +9,7 @@ from .models import Profile
 from django.db import transaction, DatabaseError
 from django.contrib.auth.decorators import login_required
 from accounts_app_account.models import Account
-
+from django.urls import resolve
 import random
 import string
 
@@ -45,6 +45,8 @@ def login(request):
                 # return render(request, 'auth_app/dashboard.html', context)
 
                 # The previous does not change route, we pass context in session
+                user = User.objects.get(username=userObject)
+                request.session['is_staff'] = user.is_staff
                 request.session['username'] = request.POST['username']
                 return HttpResponseRedirect(reverse('auth_app:dashboard'))
             else:
@@ -74,6 +76,9 @@ def signup(request):
         'profile_user': profile_user
     }
 
+    # current_url = resolve(request.path_info).url_name
+    # print(current_url)
+
     if request.method == "POST":
         # This:
         # print(request.POST)
@@ -95,17 +100,26 @@ def signup(request):
                 post_mfe = True if post_mfe == 'on' else False
                 # post_mfe = True if request.POST['customer_mfe'] == 'on' else False
 
-                exception = True
-
+                # exception = True
+                current_url = resolve(request.path_info).url_name
                 # Transactions: https://django.cowhite.com/blog/customizing-user-details-user-models-and-authentication/
                 try:
                     with transaction.atomic():
                         # create_user() hashes the password
-                        user = User.objects.create_user(email = post_email, 
-                                                        username = post_username, 
-                                                        password = post_password, 
-                                                        first_name = post_fname, 
-                                                        last_name = post_lname)
+                        if(current_url == 'signup'):
+                            user = User.objects.create_user(email = post_email, 
+                                                            username = post_username, 
+                                                            password = post_password, 
+                                                            first_name = post_fname, 
+                                                            last_name = post_lname)
+                        else:
+                            user = User.objects.create_user(email = post_email, 
+                                                            username = post_username, 
+                                                            password = post_password, 
+                                                            first_name = post_fname, 
+                                                            last_name = post_lname,
+                                                            is_staff = True)
+
                         # create() does not hash 
                         profile = Profile.objects.create(user = user, 
                                                 customer_rank = 'bronze',
@@ -129,13 +143,17 @@ def signup(request):
                     print("Transaction failed")
                     pass
                 
-                # Todo: both login + signup pass session ID
                 # If it succeeds
-                context = {
-                    'username': post_username
-                }
+                # context = {
+                #     'username': post_username
+                # }
 
-                return render(request, 'auth_app/dashboard.html', context)
+                # Needed for redirection
+                user = User.objects.get(username=post_username)
+                request.session['is_staff'] = user.is_staff
+                request.session['username'] = post_username
+                loginUser(request, authenticate(request, username=post_username, password=post_password))
+                return HttpResponseRedirect(reverse('auth_app:dashboard'))
             
             else: 
                 context = {
@@ -147,7 +165,6 @@ def signup(request):
                 'signup_user': signupForm,
                 'profile_user': profile_user
             }
-
     return render(request, 'auth_app/signup.html', context)
 
 # Migrations issues:

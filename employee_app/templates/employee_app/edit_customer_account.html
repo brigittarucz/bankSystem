@@ -1,0 +1,30 @@
+{% extends "auth_app/base.html" %}
+{% block content %}
+
+    <h4> Edit {{customer.user.last_name}} {{ customer.user.first_name }}'s Account Number {{ account.account_number }}</h4>
+    <form action="{% url 'employee_app:edit_customer_account' customer.id account.id %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="customer_id" hidden value="{{ customer.id }}" />
+        <input type="text" name="account_id" hidden value="{{ account.id }}" />
+        <label>Balance</label>
+        <input type="text" name="account_balance" value="{{ account.account_balance }}" placeholder="Edit Balance" />
+        <br/>
+        <p><b>Ongoing Loans</b></p>
+        {% for loan in loansOngoing %}
+        <p>Date: {{ loan.loan_date }} | Amount: {{ loan.loan_amount }} | Remain: {{ loan.loan_remain }} | Description: {{ loan.loan_description }}</p>
+        {% endfor %}
+        <p><b>Loans Payments</b></p>
+        <p><b>Finished Loans</b></p>
+        {% for loan in loansFinished %}
+        <p>Date: {{ loan.loan_date }} | Amount: {{ loan.loan_amount }} | Remain: 0 | Description: {{ loan.loan_description }}</p>
+        {% endfor %}
+        <p><b>Account Transactions</b></p>
+        {% for transaction in transactions %}
+        <p>Date: {{ transaction.transaction_date }} | Amount: {{ transaction.transaction_amount }} | Currency: {{ transaction.transaction_currency }} | Receiver: {{ transaction.transaction_account_number_receiver }}</p>
+        {% endfor %}
+        <button>Edit Balance</button> 
+    </form>
+
+    {{ customerFormErrors.errors }}
+
+{% endblock %}

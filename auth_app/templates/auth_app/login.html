@@ -1,14 +1,9 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1> Login </h1>
-    <a href="{% url 'auth_app:signup' %}">Go to signup</a>
-    <hr>
+{% extends './base.html' %}
+
+{% block content %}
+    {% if request.path == '/auth/login/' %}
+    <h3 class="mb-5">Welcome to Bank Customer Login</h3>
+    <p><b>Are you an employee? Go to employee login <a href="{% url 'employee_app:employee_login' %}">here</a></b></p>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
@@ -16,5 +11,15 @@
         {{ error }}
         <button type="submit">Log In</button>
     </form>
-</body>
-</html>
+    {% else %}
+    <h3 class="mb-5">Welcome to Bank Employee Login</h3>
+    <p><b>Are you an customer? Go to customer login <a href="{% url 'auth_app:login' %}">here</a></b></p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ form.errors }}
+        {{ error }}
+        <button type="submit">Log In</button>
+    </form>
+    {% endif %}
+{% endblock %}
