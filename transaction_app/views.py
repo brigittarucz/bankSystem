@@ -83,14 +83,19 @@ def transactions_view(request):
     accounts = Account.objects.filter(account_user_fk=profile)
     arrayTransaction=[]
     for account in accounts:
-        transactions = Transaction.objects.filter(transaction_user_account_fk=account).values()
-        for transaction in transactions:
-            arrayTransaction.append(transaction) 
+        transactionsMade = Transaction.objects.filter(transaction_account_number_sender=account.account_number).values()
+        for transaction in transactionsMade:
+            arrayTransaction.append(transaction)
+
+        transactionsReceived = Transaction.objects.filter(transaction_account_number_receiver=account.account_number).values()
+        for transaction in transactionsReceived:
+            arrayTransaction.append(transaction)
 
     context = {
                 "arrayTransaction" : arrayTransaction
-            }   
-    
+            }
+         
+    print(account)
     return render(request, 'transaction_app/transactions.html', context )
 
                 
@@ -100,10 +105,13 @@ def confirmation_view(request):
     user = request.user
     profile = Profile.objects.get(user=user)
     accounts = Account.objects.filter(account_user_fk=profile)
+    arrayTransaction=[]
     for account in accounts:
         user_transactions = Transaction.objects.filter(transaction_user_account_fk=account)
+        for transaction in user_transactions:
+            arrayTransaction.append(transaction)
         
-    latest_transaction = user_transactions.latest('transaction_date')
+    latest_transaction = (arrayTransaction[-1])
     context = { "latest_transaction" : latest_transaction}
     return render(request, 'transaction_app/confirmation.html', context)
 
@@ -163,7 +171,6 @@ def loan_view(request):
     user = request.user
     profile = Profile.objects.get(user=user)
     accounts = Account.objects.filter(account_user_fk=profile)
-    print(profile)
     loan = Loan.objects.filter(loan_account_fk=profile)
     
         
@@ -214,8 +221,9 @@ def loan_view(request):
         "profile": profile,
         "user": user,
         "accounts": accounts,
-        "loan": Loan.objects.get(loan_account_fk=profile)
+        "loan" : Loan.objects.filter(loan_account_fk=profile) 
     }
+    print(loan)
     return render(request, 'transaction_app/loan.html', context)
 
 
