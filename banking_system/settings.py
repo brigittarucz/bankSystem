@@ -43,11 +43,24 @@ INSTALLED_APPS = [
     'employee_app'
 ]
 
-IPFILTER_MIDDLEWARE =  {
-    'ALLOWED_IP_ADDRESSES': [
-        '127.0.0.1',
+# IPFILTER_MIDDLEWARE =  {
+#     'ALLOWED_IP_ADDRESSES': [
+#         '127.0.0.1',
+#     ]
+# }
+
+PRIVATE_PATHS = {
+    'ONLY_FOR_EMPLOYEES' : [
+        '/employee/overview_customers/',
+        '/employee/edit_customer/<int:customer_id>/',
+        '/employee/edit_customer_account/<int:customer_id>/<int:customer_account_id>/',
+        '/employee/create_customer/',
+        '/employee/create_customer_account/',
+        '/employee/login/',
+        '/employee/signup/'
     ]
 }
+ 
 MIDDLEWARE = [
     'ipfilter_middleware.middleware.IPFilterMiddleware',
     'django.middleware.security.SecurityMiddleware',
