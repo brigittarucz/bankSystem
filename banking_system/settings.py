@@ -40,8 +40,24 @@ INSTALLED_APPS = [
     'auth_app',
     'transaction_app',
     'accounts_app_account',
-    'employee_app'
+    'employee_app',
+    'api',
+
+    # 3rd party frameworks
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+    #   'todo_app.permissions.IsOwnerOrNoAccess',
+      'rest_framework.permissions.IsAuthenticated',
+   ],
+   'DEFAULT_AUTHENTICATION_CLASSES': [
+      'rest_framework.authentication.TokenAuthentication',
+   ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
