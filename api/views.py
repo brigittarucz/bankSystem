@@ -4,15 +4,24 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 # from django.http import HttpResponse
 # from rest_framework.response import Response
-from .models import Currency
-from .serializers import CurrencySerializer
-
-# Functions vs Class Based Views
+from .models import Currency, Rate
+from .serializers import CurrencySerializer, SymbolSerializer, RateSerializer
+from datetime import datetime
 
 class CurrencyList(generics.ListCreateAPIView):
     # permission_classes = (permissions.IsAuthenticated, )
     queryset = Currency.objects.all()
     serializer_class = CurrencySerializer
+
+class SymbolList(generics.ListCreateAPIView):
+    # permission_classes = (permissions.IsAuthenticated, )
+    queryset = Currency.objects.all()
+    serializer_class = SymbolSerializer
+
+class RateList(generics.ListCreateAPIView):
+    # permission_classes = (permissions.IsAuthenticated, )
+    queryset = Rate.objects.all()
+    serializer_class = RateSerializer
 
 # GET request is allowed with the view
 @api_view(['GET'])
@@ -27,3 +36,43 @@ def api_currency_detail(request, currency_code):
     serializer = CurrencySerializer(currency_detail)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def api_rate(request, rate_code):
+    
+    currency_rates = Rate.objects.filter(rate_code=rate_code)
+    
+    if not currency_rates:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    # Filter returns queryset - does not throw an error if empty
+    # Get returns object
+    # many = True is for filter
+    serializer = RateSerializer(currency_rates, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def api_rate_historical_from(request, rate_code, rate_from):
+    now = datetime.now()
+    rate_to = datetime.timestamp(now)
+
+    currency_historical = Rate.objects.filter(rate_timestamp__range=(rate_from, rate_to))
+    
+    if not currency_historical:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    currency_historical_code = currency_historical.filter(rate_code=rate_code)
+    
+    serializer = RateSerializer(currency_historical_code, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def api_rate_historical_range(request, rate_code, rate_from, rate_to):
+
+    currency_historical = Rate.objects.filter(rate_timestamp__range=(rate_from, rate_to))
+    if not currency_historical:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    currency_historical_code = currency_historical.filter(rate_code=rate_code)
+    
+    serializer = RateSerializer(currency_historical_code, many=True)
+    return Response(serializer.data)
