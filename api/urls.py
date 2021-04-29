@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import CurrencyList, SymbolList, RateList
-from .views import api_rate, api_currency_detail, api_rate_historical_from, api_rate_historical_range
+from .views import api_rate, api_currency_detail, api_rate_historical_from, api_rate_historical_range, api_convert
 app_name = 'api'
 
 urlpatterns = [
@@ -10,5 +10,6 @@ urlpatterns = [
     path('rates/', RateList.as_view()),
     path('rates/<str:rate_code>/', api_rate),
     path('rates/<str:rate_code>/<int:rate_from>/', api_rate_historical_from),
-    path('rates/<str:rate_code>/<int:rate_from>/<int:rate_to>', api_rate_historical_range),
+    path('rates/<str:rate_code>/<int:rate_from>/<int:rate_to>/', api_rate_historical_range),
+    path('convert/<str:rate_code_from>/<str:rate_code_to>/<int:amount>/', api_convert),
 ]
