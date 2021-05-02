@@ -7,10 +7,10 @@ CURRENCY_API = 'http://api.openweathermap.org/data/2.5/weather?q=London&appid=3c
 @shared_task()
 def get_currency(seconds):
     
-    result = 0
-    for i in range(seconds):
-        # time.sleep(4)
-        result += i
+    r = requests.get(CURRENCY_API)
+    print(r.json())
 
-        r = requests.get(CURRENCY_API)
-        print(r.json())
+# get_currency.delay(4)
+# get_currency(2)
+# python3 -m celery -A banking_system worker -l info
+# python3 -m celery -A banking_system beat -l info 

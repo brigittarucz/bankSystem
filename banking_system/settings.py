@@ -49,10 +49,24 @@ INSTALLED_APPS = [
     'rest_auth',
     'celery',
     'celery_progress',
+    'django_celery_beat',
 ]
 
 # TASK QUEUES
 CELERY_BROKER_URL = 'amqp://localhost'
+
+# Manual scheduling Celery
+
+CELERY_BEAT_SCHEDULE = {
+    "scheduled_task": {
+        "task": "api.tasks.get_currency",
+        "schedule": 5.0,
+        "args": ('1'),
+    }
+}
+
+# To utilize the database comment the above out and use:
+# python3 -m celery -A banking_system worker -l info -B --scheduler django_celery_beat.schedulers:DatabaseScheduler
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

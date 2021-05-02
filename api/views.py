@@ -100,3 +100,19 @@ def api_convert(request, rate_code_from, rate_code_to, amount):
 
     print(result)
 
+# Update current data
+@api_view(['PATCH'])
+def api_currency_detail_patch(request, currency_code):
+
+    try:
+        currency_detail = Currency.objects.get(currency_code=currency_code)
+        print(currency_detail)
+    except Currency.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = CurrencySerializer(currency_detail)
+    return Response(serializer.data)
+
+
+
+# Update historical data
