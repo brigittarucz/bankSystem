@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 urlpatterns = [
     # Admin
@@ -12,4 +12,6 @@ urlpatterns = [
     # API
     path('api/v1/', include('api.urls')),
     path('api-auth/', include('rest_framework.urls')),
+    # Task queues
+    path('celery-progress/', include('celery_progress.urls'))
 ]

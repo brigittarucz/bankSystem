@@ -47,7 +47,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
+    'celery',
+    'celery_progress',
 ]
+
+# TASK QUEUES
+CELERY_BROKER_URL = 'amqp://localhost'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
