@@ -9,20 +9,24 @@ from .serializers import CurrencySerializer, SymbolSerializer, RateSerializer
 from datetime import datetime
 from api.models import Rate
 
+
 class CurrencyList(generics.ListCreateAPIView):
     # permission_classes = (permissions.IsAuthenticated, )
     queryset = Currency.objects.all()
     serializer_class = CurrencySerializer
+
 
 class SymbolList(generics.ListCreateAPIView):
     # permission_classes = (permissions.IsAuthenticated, )
     queryset = Currency.objects.all()
     serializer_class = SymbolSerializer
 
+
 class RateList(generics.ListCreateAPIView):
     # permission_classes = (permissions.IsAuthenticated, )
     queryset = Rate.objects.all()
     serializer_class = RateSerializer
+
 
 # GET request is allowed with the view
 @api_view(['GET'])
@@ -37,6 +41,7 @@ def api_currency_detail(request, currency_code):
     serializer = CurrencySerializer(currency_detail)
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 def api_rate(request, rate_code):
     
@@ -50,6 +55,7 @@ def api_rate(request, rate_code):
     # many = True is for filter
     serializer = RateSerializer(currency_rates, many=True)
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 def api_rate_historical_from(request, rate_code, rate_from):
@@ -66,6 +72,7 @@ def api_rate_historical_from(request, rate_code, rate_from):
     serializer = RateSerializer(currency_historical_code, many=True)
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 def api_rate_historical_range(request, rate_code, rate_from, rate_to):
 
@@ -77,6 +84,7 @@ def api_rate_historical_range(request, rate_code, rate_from, rate_to):
     
     serializer = RateSerializer(currency_historical_code, many=True)
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 def api_convert(request, rate_code_from, rate_code_to, amount):
@@ -101,7 +109,8 @@ def api_convert(request, rate_code_from, rate_code_to, amount):
 
     print(result)
 
-# Update current data
+
+# http://127.0.0.1:8000/api/v1/update/eur/
 @api_view(['PATCH'])
 def api_currency_update(request, currency_code):
 
@@ -123,16 +132,9 @@ def api_currency_update(request, currency_code):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+# http://127.0.0.1:8000/api/v1/create/
 @api_view(['POST'])
 def api_rate_historical_post(request):
-
-    print("Here")
-    now = datetime.now()
-    rate_now = datetime.timestamp(now)
-
-    rate = Rate(rate_code='dja', rate_timestamp=rate_now, rate_value=1)
-
     if request.method == 'POST':
         serializer = RateSerializer(rate, data=request.data)
         data = {}
@@ -140,6 +142,3 @@ def api_rate_historical_post(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# Update historical data

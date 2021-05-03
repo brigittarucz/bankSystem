@@ -59,16 +59,11 @@ CELERY_BROKER_URL = 'amqp://localhost'
 
 CELERY_BEAT_SCHEDULE = {
     "scheduled_task": {
-        "task": "api.tasks.get_currency",
-        "schedule": 5.0,
-        "args": ('1'),
-    },
-    "scheduled_task": {
-        "task": "api.tasks.post_rate",
-        "schedule": 5.0
-    },
-    "scheduled_task": {
         "task": "api.tasks.update_rates",
+        "schedule": 120.0
+    },
+    "scheduled_task": {
+        "task": "api.tasks.update_currency_rates",
         "schedule": 5.0
     }
 }

@@ -1,36 +1,50 @@
 from celery import shared_task
-from api.models import Currency
+from api.models import Currency, Rate
+from datetime import datetime, timedelta
 import requests
 
-CURRENCY_API = 'http://api.openweathermap.org/data/2.5/weather?q=London&appid=3c43fac79a2cc3e14edecaf8911f8e2c'
-POST_API = 'http://127.0.0.1:8000/api/v1/create/'
-
-GET_CURRENCY_API_EX = 'https://api.ratesapi.io/api/latest?base=USD'
-UPDATE_CURRENCY_API_IN = 'http://127.0.0.1:8000/api/v1/update/'
+CURRENCY_API= 'https://api.ratesapi.io/api/latest?base=USD'
+CURRENCY_API_HISTORICAL = 'https://api.ratesapi.io/api/'
 
 # Lets us create tasks without having concrete app
-@shared_task()
-def get_currency(seconds):
-    
-    r = requests.get(CURRENCY_API)
-    print(r.json())
-
-@shared_task()
-def post_rate():
-
-    payload = {
-        'rate_code': 1
-    }
-
-    r = requests.post(POST_API, data=payload)
-
-@shared_task()
+@shared_task(max_retried=3)
 def update_rates():
+    # 0. Create array and delete all rates
+    rates = ['DKK', 'GBP', 'HUF', 'RON', 'NOK', 'SEK', 'JPY', 'RUB', 'INR']
+
+    Rate.objects.all().delete()
+
+    # 1. Generate dates for each one of the past 15 days
+    todayObj = datetime.today()
+
+    for day in range(1, 15):
+      
+        dateObj = todayObj - timedelta(days=day)
+        
+        # 2. In a loop for each date, make a request 
+        r = requests.get(CURRENCY_API_HISTORICAL + dateObj.strftime('%Y-%m-%d') + '?base=USD')
+        currencyObject = r.json()
+        print(r.json())
+
+        if r.status_code == 200:
+
+            # 3. Create new object for each rate
+            for rate in rates:
+                newRate = Rate(rate_code=rate, 
+                            rate_timestamp=int(datetime.timestamp(dateObj)), 
+                            rate_value=currencyObject['rates'][rate])
+
+                # 4. Save new obj to db
+                newRate.save()
+
+
+@shared_task(max_retries=3)
+def update_currency_rates():
     # 1. Get current rates from api
     currencies = Currency.objects.all()
-    r = requests.get(GET_CURRENCY_API_EX)
+    r = requests.get(CURRENCY_API)
     currencyObject = r.json()
-    print(currencyObject['rates'])
+    # print(currencyObject['rates'])
     
     if r.status_code == 200:
         for currency in currencies:
