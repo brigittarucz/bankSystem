@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import CurrencyList, SymbolList, RateList
 from .views import api_rate, api_currency_detail, api_rate_historical_from, api_rate_historical_range, api_convert
-from .views import api_rate_historical_post, api_currency_detail_patch
+from .views import api_rate_historical_post, api_currency_update
 app_name = 'api'
 
 urlpatterns = [
@@ -10,7 +10,7 @@ urlpatterns = [
     path('latest/<str:currency_code>/', api_currency_detail, name="detail"),
     path('rates/', RateList.as_view()),
     path('create/', api_rate_historical_post, name="create"),
-    path('update/<str:currency_code>/', api_currency_detail_patch, name="edit"),
+    path('update/<str:currency_code>/', api_currency_update, name="edit"),
     path('rates/<str:rate_code>/', api_rate),
     path('rates/<str:rate_code>/<int:rate_from>/', api_rate_historical_from),
     path('rates/<str:rate_code>/<int:rate_from>/<int:rate_to>/', api_rate_historical_range),

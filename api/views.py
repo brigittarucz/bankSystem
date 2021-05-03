@@ -103,7 +103,7 @@ def api_convert(request, rate_code_from, rate_code_to, amount):
 
 # Update current data
 @api_view(['PATCH'])
-def api_currency_detail_patch(request, currency_code):
+def api_currency_update(request, currency_code):
 
     try:
         currency_detail = Currency.objects.get(currency_code=currency_code)
@@ -126,6 +126,7 @@ def api_currency_detail_patch(request, currency_code):
 
 @api_view(['POST'])
 def api_rate_historical_post(request):
+
     print("Here")
     now = datetime.now()
     rate_now = datetime.timestamp(now)
