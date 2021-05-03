@@ -62,11 +62,17 @@ CELERY_BEAT_SCHEDULE = {
         "task": "api.tasks.get_currency",
         "schedule": 5.0,
         "args": ('1'),
+    },
+    "scheduled_task": {
+        "task": "api.tasks.post_rate",
+        "schedule": 5.0
     }
 }
 
 # To utilize the database comment the above out and use:
 # python3 -m celery -A banking_system worker -l info -B --scheduler django_celery_beat.schedulers:DatabaseScheduler
+# docker run -d -p 5672:5672 rabbitmq 
+# docker run -d -p 6379:6379 redis
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

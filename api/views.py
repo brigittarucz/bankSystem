@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from .models import Currency, Rate
 from .serializers import CurrencySerializer, SymbolSerializer, RateSerializer
 from datetime import datetime
+from api.models import Rate
 
 class CurrencyList(generics.ListCreateAPIView):
     # permission_classes = (permissions.IsAuthenticated, )
@@ -110,9 +111,34 @@ def api_currency_detail_patch(request, currency_code):
     except Currency.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = CurrencySerializer(currency_detail)
-    return Response(serializer.data)
+    if request.method == 'PATCH':
+        serializer = CurrencySerializer(currency_detail, data=request.data)
+        # Data is similar to context for serializers
+        data = {}
+        # When updating something a serializer is very similar to a form
+        if serializer.is_valid():
+            serializer.save()
+            data["success"] = "Update successful"
+            return Response(data=data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+@api_view(['POST'])
+def api_rate_historical_post(request):
+    print("Here")
+    now = datetime.now()
+    rate_now = datetime.timestamp(now)
+
+    rate = Rate(rate_code='dja', rate_timestamp=rate_now, rate_value=1)
+
+    if request.method == 'POST':
+        serializer = RateSerializer(rate, data=request.data)
+        data = {}
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Update historical data
