@@ -129,6 +129,10 @@ def loan_payment(request):
         updated_loan_remain = loan_remain - amount
         print(updated_loan_remain)
         loan.loan_remain = updated_loan_remain
+        
+        # Todo: Replace and test
+        # transaction = Transaction.create_transaction(selected_account, account_number, 'BankingSystem Loan Payment', amount)
+
         transaction = Transaction.objects.create(transaction_user_account_fk=selected_account,
                                                  transaction_account_number_sender=account_number,
                                                  transaction_account_number_receiver='BankingSystem Loan Payment',
@@ -177,12 +181,18 @@ def loan_view(request):
         selected_account.account_balance = selected_account.account_balance + total_amount
         # selected_account.account_balance = selected_account.accounts_balance + total_amount
          
+        # Todo: Replace and test
+        # loan = Loan.create_loan(profile, loan_description, total_amount, total_amount)
+        
         loan = Loan.objects.create(loan_account_fk = profile,
-                                    loan_id=get_random_string(length=20),
-                                    loan_description=loan_description,
-                                    loan_amount=total_amount,
-                                    loan_remain=total_amount
-                                    )
+                                   loan_id=get_random_string(length=20),
+                                   loan_description=loan_description,
+                                   loan_amount=total_amount,
+                                   loan_remain=total_amount )
+
+        # Todo: Replace and test
+        # transaction = Transaction.create_transaction(selected_account, 'Bank Loan', selected_account.account_number, total_amount)
+
         transaction = Transaction.objects.create(transaction_user_account_fk=selected_account,
                                                  transaction_account_number_sender='Bank Loan',
                                                  transaction_account_number_receiver=selected_account.account_number,
