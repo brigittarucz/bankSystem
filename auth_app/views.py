@@ -121,12 +121,7 @@ def signup(request):
                                                             is_staff = True)
 
                         # create() does not hash 
-                        profile = Profile.objects.create(user = user, 
-                                                customer_rank = 'bronze',
-                                                customer_phone_number = post_phone,
-                                                customer_token = '123token', 
-                                                customer_mfe = post_mfe, 
-                                                customer_can_loan = False)
+                        profile = Profile.create_profile(user, post_phone, '123token', post_mfe)
                         
                         letters = string.digits
                         value = ( ''.join(random.choice(letters) for i in range(20)) )
