@@ -18,7 +18,6 @@ urlpatterns = [
     path('employee/', include('employee_app.urls')),
     # path('auth/', include('django.contrib.auth.urls')),
     path('chat/', include('chat.urls')),
-    path('admin/', admin.site.urls),
     # API
     path('api/v1/', include('api.urls')),
     path('api-auth/', include('rest_framework.urls')),
