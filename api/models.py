@@ -15,6 +15,8 @@ class Currency(models.Model):
     def __str__(self):
         return f"{self.currency_name} - {self.currency_code} - {self.currency_timestamp} - {self.currency_rate}"
 
+    
+
 # API data object
 # Rates reported to base USD (POST)
 # /v1/currency_name/historical/date_from/date_to

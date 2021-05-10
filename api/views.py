@@ -101,13 +101,25 @@ def api_convert(request, rate_code_from, rate_code_to, amount):
     except Currency.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    # 1CAD = conversion_rate * 1 EUR
-    # 1EUR = 1 / conversion_rate CAD
-    conversion_rate_to = currency_from.currency_rate / currency_to.currency_rate
-    conversion_rate_from = 1 / conversion_rate_to
-    result = conversion_rate_from*amount
+    print("Here")
+    if rate_code_from == 'USD':
+        conversion_rate_from = 1 / currency_from.currency_rate
+        result = amount * conversion_rate_from
+    elif rate_code_to == 'USD':
+        conversion_rate_from = 1 / currency_from.currency_rate
+        result = amount * conversion_rate_from
+    else:
+        # 1CAD = conversion_rate * 1 EUR
+        # 1EUR = 1 / conversion_rate CAD
+        conversion_rate_to = currency_from.currency_rate / currency_to.currency_rate
+        conversion_rate_from = 1 / conversion_rate_to
+        result = conversion_rate_from*amount
 
-    print(result)
+    data = {}
+    data["currency_from"] = rate_code_from
+    data["currency_to"] = rate_code_to
+    data["conversion_result"] = result
+    return Response(data=data)
 
 
 # http://127.0.0.1:8000/api/v1/update/eur/
