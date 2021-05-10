@@ -7,20 +7,20 @@
 
 {% if profile.customer_rank == 'bronze' %}
 <div class="alert alert-warning" role="alert">
-    You do not have the requirements to apply for a loan. Please contact us for more information.
+    You do not have the requirements to apply for a loan. <a href='/chat/'>Please contact us for more information.</a>
   </div>
 {% elif profile.customer_can_loan == False  %}
 <div class="alert alert-danger" role="alert">
   You already have a current Loan. Please cancel it before request another one
 </div>
 
-<form method='POST'>
+<!-- <form method='POST'>
 {% csrf_token %}
 <p>Your current Loan ID: <b> {{loan.loan_id}} </b> </p>
 <p> Loan date granted: <b> {{loan.loan_date}} </b> </p>
 <p>Total loan amount: <b> {{loan.loan_amount}} </b> </p>
 <hr>
-<p> Remaining amount payable: <b style='color: red'> {{ loan.loan_remain}}</b> </p>
+<p> Remaining amount payable: <b style='color: red'> {{ loan.loan_remain}}</b> </p> -->
 
 
 <a class="btn btn-outline-success mt-4" href='/transaction/payment'> Pay my loan</a>

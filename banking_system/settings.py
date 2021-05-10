@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'chat',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,10 +42,29 @@ INSTALLED_APPS = [
     'auth_app',
     'transaction_app',
     'accounts_app_account',
-    'employee_app'
+    'employee_app',
 ]
 
+# IPFILTER_MIDDLEWARE =  {
+#     'ALLOWED_IP_ADDRESSES': [
+#         '127.0.0.1',
+#     ]
+# }
+
+PRIVATE_PATHS = {
+    'ONLY_FOR_EMPLOYEES' : [
+        '/employee/overview_customers/',
+        '/employee/edit_customer/<int:customer_id>/',
+        '/employee/edit_customer_account/<int:customer_id>/<int:customer_account_id>/',
+        '/employee/create_customer/',
+        '/employee/create_customer_account/',
+        '/employee/login/',
+        '/employee/signup/'
+    ]
+}
+ 
 MIDDLEWARE = [
+    'ipfilter_middleware.middleware.IPFilterMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -71,8 +92,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'banking_system.wsgi.application'
+# WSGI_APPLICATION = 'banking_system.wsgi.application'
 
+ASGI_APPLICATION = 'banking_system.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases

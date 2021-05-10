@@ -10,15 +10,17 @@ from django.utils.crypto import get_random_string
 from django.contrib import messages
 
 from django.db import transaction 
+# from django.utils.decorators import decorator_from_middleware
 
 from accounts_app_account.models import Account
 from auth_app.models import Profile
 from .models import Transaction
 from .models import Loan
 
+# from ipfilter_middleware.middleware import IPFilterMiddleware
 
 
-
+# @decorator_from_middleware(IPFilterMiddleware)
 def index(request):
     # Dashboard/Page of transactions/loans
     
@@ -81,14 +83,19 @@ def transactions_view(request):
     accounts = Account.objects.filter(account_user_fk=profile)
     arrayTransaction=[]
     for account in accounts:
-        transactions = Transaction.objects.filter(transaction_user_account_fk=account).values()
-        for transaction in transactions:
-            arrayTransaction.append(transaction) 
+        transactionsMade = Transaction.objects.filter(transaction_account_number_sender=account.account_number).values()
+        for transaction in transactionsMade:
+            arrayTransaction.append(transaction)
+
+        transactionsReceived = Transaction.objects.filter(transaction_account_number_receiver=account.account_number).values()
+        for transaction in transactionsReceived:
+            arrayTransaction.append(transaction)
 
     context = {
                 "arrayTransaction" : arrayTransaction
-            }   
-    
+            }
+         
+    print(account)
     return render(request, 'transaction_app/transactions.html', context )
 
                 
@@ -98,10 +105,13 @@ def confirmation_view(request):
     user = request.user
     profile = Profile.objects.get(user=user)
     accounts = Account.objects.filter(account_user_fk=profile)
+    arrayTransaction=[]
     for account in accounts:
         user_transactions = Transaction.objects.filter(transaction_user_account_fk=account)
+        for transaction in user_transactions:
+            arrayTransaction.append(transaction)
         
-    latest_transaction = user_transactions.latest('transaction_date')
+    latest_transaction = (arrayTransaction[-1])
     context = { "latest_transaction" : latest_transaction}
     return render(request, 'transaction_app/confirmation.html', context)
 
@@ -110,7 +120,6 @@ def confirmation_view(request):
 
 
 def loan_payment(request):
-    user = request.user
     user = request.user
     profile = Profile.objects.get(user=user)
     accounts = Account.objects.filter(account_user_fk=profile)
@@ -162,7 +171,7 @@ def loan_view(request):
     user = request.user
     profile = Profile.objects.get(user=user)
     accounts = Account.objects.filter(account_user_fk=profile)
-    loan = Loan.objects.filter(loan_account_fk=profile).latest('loan_date')
+    loan = Loan.objects.filter(loan_account_fk=profile)
     
         
         
@@ -212,9 +221,9 @@ def loan_view(request):
         "profile": profile,
         "user": user,
         "accounts": accounts,
-        "loan":loan
+        "loan" : Loan.objects.filter(loan_account_fk=profile) 
     }
-    
+    print(loan)
     return render(request, 'transaction_app/loan.html', context)
 
 
