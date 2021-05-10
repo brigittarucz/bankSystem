@@ -103,18 +103,12 @@ def create_customer(request):
             try:
                 with transaction.atomic():
                     # create_user() hashes the password
-                    user = User.objects.create_user(email = post_email, 
-                                                    username = post_username, 
-                                                    password = post_password, 
-                                                    first_name = post_fname, 
-                                                    last_name = post_lname)
+                    user = Profile.create_customer(post_email, post_username, post_password, post_fname, post_lname)
+
                     # create() does not hash 
-                    profile = Profile.objects.create(user = user, 
-                                                    customer_rank = post_rank,
-                                                    customer_phone_number = post_phone,
-                                                    customer_token = '123token', 
-                                                    customer_mfe = False, 
-                                                    customer_can_loan = post_loan)
+                    profile = Profile.create_profile(user, post_phone, '123token', False, post_loan)
+
+
                 # Test exception:
                 # if exception:
                 #     raise exception
@@ -205,11 +199,9 @@ def create_customer_account(request):
                 try:
                     letters = string.digits
                     value = ( ''.join(random.choice(letters) for i in range(20)) )
-                    account = Account.objects.create(
-                                    account_user_fk=customer,
-                                    account_number=value,
-                                    account_balance=request.POST['account_balance']              
-                    )
+                    
+                    account = Account.create_account(customer, value, request.POST['account_balance'])
+
                     return overview_customers(request)
                 except DatabaseError:
                     # Todo: Print error message

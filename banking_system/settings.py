@@ -43,6 +43,16 @@ INSTALLED_APPS = [
     'transaction_app',
     'accounts_app_account',
     'employee_app',
+    'api',
+
+    # 3rd party frameworks
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'celery',
+    'celery_progress',
+    'django_celery_beat',
+    'rest_framework_swagger',
 ]
 
 # IPFILTER_MIDDLEWARE =  {
@@ -62,7 +72,39 @@ PRIVATE_PATHS = {
         '/employee/signup/'
     ]
 }
- 
+
+# TASK QUEUES
+CELERY_BROKER_URL = 'amqp://localhost'
+
+# Manual scheduling Celery
+
+CELERY_BEAT_SCHEDULE = {
+    "scheduled_task": {
+        "task": "api.tasks.update_rates",
+        "schedule": 120.0
+    },
+    "scheduled_task": {
+        "task": "api.tasks.update_currency_rates",
+        "schedule": 5.0
+    }
+}
+
+# To utilize the database comment the above out and use:
+# python3 -m celery -A banking_system worker -l info -B --scheduler django_celery_beat.schedulers:DatabaseScheduler
+# docker run -d -p 5672:5672 rabbitmq 
+# docker run -d -p 6379:6379 redis
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_PERMISSION_CLASSES': [
+      'rest_framework.permissions.AllowAny',
+   ],
+#    'DEFAULT_AUTHENTICATION_CLASSES': [
+#        'rest_framework.authentication.SessionAuthentication',
+#       'rest_framework.authentication.TokenAuthentication',
+#    ]
+}
+
 MIDDLEWARE = [
     'ipfilter_middleware.middleware.IPFilterMiddleware',
     'django.middleware.security.SecurityMiddleware',
