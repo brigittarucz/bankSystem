@@ -113,12 +113,12 @@ def signup(request):
                             user = Profile.create_employee(post_email, post_username, post_password, post_fname, post_lname)
 
                         # create() does not hash 
-                        profile = Profile.create_profile(user, post_phone, '123token', post_mfe)
+                        profile = Profile.create_profile(user, post_phone, '123token', post_mfe, False)
                         
                         letters = string.digits
                         value = ( ''.join(random.choice(letters) for i in range(20)) )
                         
-                        account = Account.create_account(profile, value)
+                        account = Account.create_account(profile, value, 0.00)
 
                         # Test exception:
                         # if exception:

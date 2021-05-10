@@ -11,10 +11,10 @@ class Account(models.Model):
         return f"Number {self.account_number} - Name:{self.account_user_fk} - Balance: {self.account_balance}"
 
     @classmethod
-    def create_account(self, profile, value):
+    def create_account(self, profile, value, balance):
         account = Account.objects.create(account_user_fk=profile,
                                          account_number=value,
-                                         account_balance=0.00)
+                                         account_balance=balance)
 
         account.save()
         return account

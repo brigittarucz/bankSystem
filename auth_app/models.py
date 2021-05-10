@@ -24,12 +24,12 @@ class Profile(models.Model):
         return f"{self.user} | {self.customer_phone_number} | {self.customer_rank} | { True if self.customer_can_loan else False}"
 
     @classmethod
-    def create_profile(self, user, phone, token, mfe):
+    def create_profile(self, user, phone, token, mfe, can_loan):
         profile = Profile.objects.create(user = user, 
                                          customer_phone_number = phone,
                                          customer_token = token, 
                                          customer_mfe = mfe, 
-                                         customer_can_loan = False)
+                                         customer_can_loan = can_loan)
 
         profile.save()
         return profile
