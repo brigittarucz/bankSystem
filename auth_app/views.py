@@ -107,18 +107,10 @@ def signup(request):
                     with transaction.atomic():
                         # create_user() hashes the password
                         if(current_url == 'signup'):
-                            user = User.objects.create_user(email = post_email, 
-                                                            username = post_username, 
-                                                            password = post_password, 
-                                                            first_name = post_fname, 
-                                                            last_name = post_lname)
+                            user = Profile.create_customer(post_email, post_username, post_password, post_fname, post_lname)
+                            
                         else:
-                            user = User.objects.create_user(email = post_email, 
-                                                            username = post_username, 
-                                                            password = post_password, 
-                                                            first_name = post_fname, 
-                                                            last_name = post_lname,
-                                                            is_staff = True)
+                            user = Profile.create_employee(post_email, post_username, post_password, post_fname, post_lname)
 
                         # create() does not hash 
                         profile = Profile.create_profile(user, post_phone, '123token', post_mfe)

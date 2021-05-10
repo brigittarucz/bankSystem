@@ -33,3 +33,24 @@ class Profile(models.Model):
 
         profile.save()
         return profile
+
+    @classmethod
+    def create_customer(self, email, username, password, first_name, last_name) -> User:
+        user = User.objects.create_user(email = email, 
+                                        username = username, 
+                                        password = password, 
+                                        first_name = first_name, 
+                                        last_name = last_name)
+
+        return user
+
+    @classmethod
+    def create_employee(self, email, username, password, first_name, last_name) -> User:
+        user = User.objects.create_user(email = email, 
+                                        username = username, 
+                                        password = password, 
+                                        first_name = first_name, 
+                                        last_name = last_name,
+                                        is_staff = True)
+
+        return user
