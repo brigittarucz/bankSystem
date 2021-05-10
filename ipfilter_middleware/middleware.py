@@ -10,7 +10,7 @@ class IPFilterMiddleware:
 
    def __call__(self, request):
     
-      allowed_ip_addresses = '127.0.0.2'
+      allowed_ip_addresses = '127.0.0.1'
       private_paths = settings.PRIVATE_PATHS['ONLY_FOR_EMPLOYEES']
       employee_ip = request.META.get('REMOTE_ADDR')
       requested_path = request.path

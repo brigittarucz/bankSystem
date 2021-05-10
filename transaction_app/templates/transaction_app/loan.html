@@ -7,7 +7,7 @@
 
 {% if profile.customer_rank == 'bronze' %}
 <div class="alert alert-warning" role="alert">
-    You do not have the requirements to apply for a loan. Please contact us for more information.
+    You do not have the requirements to apply for a loan. <a href='/chat/'>Please contact us for more information.</a>
   </div>
 {% elif profile.customer_can_loan == False  %}
 <div class="alert alert-danger" role="alert">
