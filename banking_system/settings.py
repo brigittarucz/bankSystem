@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'celery',
     'celery_progress',
     'django_celery_beat',
+    'rest_framework_swagger',
 ]
 
 # TASK QUEUES
@@ -74,6 +75,7 @@ CELERY_BEAT_SCHEDULE = {
 # docker run -d -p 6379:6379 redis
 
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [
       'rest_framework.permissions.AllowAny',
    ],

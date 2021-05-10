@@ -2,6 +2,7 @@ from django.urls import path
 from .views import CurrencyList, SymbolList, RateList
 from .views import api_rate, api_currency_detail, api_rate_historical_from, api_rate_historical_range, api_convert
 from .views import api_rate_historical_post, api_currency_update
+
 app_name = 'api'
 
 urlpatterns = [

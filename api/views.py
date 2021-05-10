@@ -90,7 +90,6 @@ def api_rate_historical_range(request, rate_code, rate_from, rate_to):
 def api_convert(request, rate_code_from, rate_code_to, amount):
     # EUR/USD ÷ CAD/USD = EUR/CAD
 
-    # Todo: handle USD case
     try:
         currency_from = Currency.objects.get(currency_code=rate_code_from)
     except Currency.DoesNotExist:
@@ -101,7 +100,6 @@ def api_convert(request, rate_code_from, rate_code_to, amount):
     except Currency.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    print("Here")
     if rate_code_from == 'USD':
         conversion_rate_from = 1 / currency_from.currency_rate
         result = amount * conversion_rate_from
