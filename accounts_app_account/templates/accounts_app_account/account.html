@@ -8,9 +8,11 @@
     <small class="badge badge-pill badge-primary"> <a href="/auth/dashboard" > Go dashboard</a></small>
 
     <div>
-        <p> <b> Username:</b> {{user.first_name}} </p>
+        <p> <b> Username:</b> {{user.username}} </p>
         <p> <b> Email: </b>  {{user.email}}</p>
         <p> <b> Phone: </b> {{customer.customer_phone_number}} </p>
+
+        <span> <b> We strongly suggest activate the multifactor authentification </b> <a href="/settings/mfa/configure/"> here </a></span>
 
     </div>
     <table class="table">

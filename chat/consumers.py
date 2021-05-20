@@ -47,48 +47,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         }))
 
 
-# from channels.consumer import SyncConsumer
-# from asgiref.sync import async_to_sync
-
-
-
-# class EchoConsumer(SyncConsumer):
-
-#     def websocket_connect(self, event):
-#         self.room_name = 'broadcast'
-# #We can do validation at this point to accept or reject the connection
-#         self.send({
-#             'type': 'websocket.accept'
-#         })
-#         #channel_name is the same as say ssh connection id
-#         async_to_sync(self.channel_layer.group_add)(self.room_name, self.channel_name)
-#         print(f'[{self.channel_name} - You-re connected')
-
-#     def websocket_receive(self, event):
-#         print(f'[{self.channel_name} - Received Message - {event["text"]}')
-#         async_to_sync(self.channel_layer.group_send)(
-#             self.room_name,
-#             {
-#             'type':'websocket.message',
-#             'text': event.get('text')
-#             }
-#         )
-
-        
-#     def websocket_message(self, event):
-#         print(f'[{self.channel_name} - Message Sent - {event["text"]}')
-#         self.send({
-#             'type':'websocket.send',
-#             'text': event.get('text')
-#         })
-
-
-
-
-        
-#     def websocket_disconnect(self, event):
-#         print(f'[{self.channel_name} - Disconnected')
-#         async_to_sync(self.channel_layer.group_discard)(self.room_name, self.channel_name)
 
 
 
