@@ -2,6 +2,7 @@
 from django.db import models
 from django.db.models import Manager
 
+# https://docs.djangoproject.com/en/3.2/topics/db/managers/
 class RateManager(Manager):
     def get_specific_rate(self, rate_code):
         return self.filter(rate_code=rate_code)

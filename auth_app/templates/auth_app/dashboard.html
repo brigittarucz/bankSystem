@@ -1,7 +1,54 @@
 {% extends './base.html' %}
+{% load timetags %}
 {% block content %}
 
     <h3 class="mb-5">Dashboard</h3>
-    <p> Hello {{ request.session.username }} </p>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <p> Hello, {{ request.session.username }} ! </p>
+            </div>
+            <div class="col-8">
+                <table class="table table-striped table-dark">
+                    <thead>
+                      <tr>
+                        <th scope="col">Flag</th>
+                        <th scope="col">Currency</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Symbol</th>
+                        <th scope="col">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-success"> 
+                            <td><img width="30px" height="20px" src='https://www.worldometers.info/img/flags/us-flag.gif' /></td>
+                            <th scope="row">USD</th>
+                            <td>1</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                      {% for currency in rates %}
+                        {% if currency.currency_code != 'USD' %}
+                            <tr> 
+                                <td><img width="30px" height="20px" src={{ currency.currency_image }} /></td>
+                                <th scope="row">{{ currency.currency_code }}</th>
+                                <td>{{ currency.currency_rate }}</td>
+                                <td>{{ currency.currency_symbol }}</td>
+                                <td>{{ currency.currency_timestamp|print_timestamp }}</td>
+                            </tr>
+                        {% endif %}
+                      {% endfor %}
+                    </tbody>
+            
+                </table> 
+            </div>
+        </div>
+    </div>
+    
+    
+
 
 {% endblock %}

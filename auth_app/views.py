@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login as loginUser, logout as logo
 from .forms import SignupProfileForm, SignupUserForm, LoginForm
 from django.contrib.auth.models import User
 from .models import Profile
+from api.models import Currency
 from django.db import transaction, DatabaseError
 from django.contrib.auth.decorators import login_required
 from accounts_app_account.models import Account
@@ -13,9 +14,16 @@ from django.urls import resolve
 import random
 import string
 
+
 @login_required(login_url='/auth/login/')
 def dashboard(request):
-    return render(request, 'auth_app/dashboard.html')
+    currencies = Currency.objects.all()
+
+    context = {
+        'rates': currencies
+    }
+
+    return render(request, 'auth_app/dashboard.html', context)
 
 def logout(request):
     # Calls also flush() which removes session data

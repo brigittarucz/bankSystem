@@ -13,7 +13,7 @@ class Currency(models.Model):
     currency_rate = models.DecimalField(decimal_places=10, max_digits=20, default=0)
 
     def __str__(self):
-        return f"{self.currency_name} - {self.currency_code} - {self.currency_timestamp} - {self.currency_rate}"
+        return f"{self.currency_name} - {self.currency_code} - {self.currency_timestamp} - {self.currency_rate} - {self.currency_symbol} - {self.currency_image}"
 
 
 
