@@ -27,7 +27,6 @@ class RateList(generics.ListCreateAPIView):
     rates = ['DKK', 'GBP', 'HUF', 'RON', 'NOK', 'SEK', 'JPY', 'RUB', 'INR']
     latestRates = []
 
-
     for rate in rates:
         latestRate = Rate.objects.filter(rate_code=rate).latest('rate_timestamp')
         latestRates.append(latestRate)
@@ -53,7 +52,7 @@ def api_currency_detail(request, currency_code):
 @api_view(['GET'])
 def api_rate(request, rate_code):
     
-    currency_rates = Rate.filters.get_specific_rates(rate_code)
+    currency_rates = Rate.get_rate(rate_code)
     print(currency_rates)
     if not currency_rates:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -70,7 +69,7 @@ def api_rate_historical_from(request, rate_code, rate_from):
     now = datetime.now()
     rate_to = datetime.timestamp(now)
 
-    currency_historical = Rate.objects.filter(rate_timestamp__range=(rate_from, rate_to))
+    currency_historical = Rate.get_range(rate_from, rate_to)
     
     if not currency_historical:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -84,7 +83,8 @@ def api_rate_historical_from(request, rate_code, rate_from):
 @api_view(['GET'])
 def api_rate_historical_range(request, rate_code, rate_from, rate_to):
 
-    currency_historical = Rate.objects.filter(rate_timestamp__range=(rate_from, rate_to))
+    currency_historical = Rate.get_range(rate_from, rate_to)
+
     if not currency_historical:
         return Response(status=status.HTTP_404_NOT_FOUND)
     

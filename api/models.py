@@ -32,3 +32,9 @@ class Rate(models.Model):
 
     objects = models.Manager()
     filters = RateManager()
+
+    def get_rate(rate_code):
+        return Rate.filters.get_specific_rate(rate_code)
+
+    def get_range(rate_from, rate_to):
+        return Rate.filters.get_range_rates(rate_from, rate_to)
