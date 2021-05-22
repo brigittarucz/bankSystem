@@ -8,7 +8,7 @@ class Currency(models.Model):
     currency_name = models.CharField(max_length=30, null=False)
     currency_code = models.CharField(max_length=3, null=False)
     currency_image = models.CharField(max_length=300, null=False)
-    currency_symbol = models.CharField(max_length=1, null=False)
+    currency_symbol = models.CharField(max_length=3, null=False)
     currency_timestamp = models.IntegerField(null=False, default=0)
     currency_rate = models.DecimalField(decimal_places=10, max_digits=20, default=0)
 

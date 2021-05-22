@@ -24,7 +24,15 @@ class SymbolList(generics.ListCreateAPIView):
 
 class RateList(generics.ListCreateAPIView):
     # permission_classes = (permissions.IsAuthenticated, )
-    queryset = Rate.objects.all()
+    rates = ['DKK', 'GBP', 'HUF', 'RON', 'NOK', 'SEK', 'JPY', 'RUB', 'INR']
+    latestRates = []
+
+
+    for rate in rates:
+        latestRate = Rate.objects.filter(rate_code=rate).latest('rate_timestamp')
+        latestRates.append(latestRate)
+
+    queryset = latestRates
     serializer_class = RateSerializer
 
 
