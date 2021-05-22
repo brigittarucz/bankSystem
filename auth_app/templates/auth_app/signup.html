@@ -9,13 +9,14 @@
 
             {% for field in signup_user %}
             <div class="row">
-                {{ field.errors }}
+                
                 <div class="col-25">
                     {{ field.label_tag }} 
                 </div>
                 <div class="col-75">
                     {{ field }}
                 </div>
+                <div> {{ field.errors }} </div>
                 <!-- {% if field.help_text %}
                 <p class="help">{{ field.help_text|safe }}</p>
                 {% endif %} -->
@@ -24,13 +25,14 @@
 
             {% for field in profile_user %}
             <div class="row">
-                {{ field.errors }}
+                
                 <div class="col-25">
                     {{ field.label_tag }} 
                 </div>
                 <div class="col-75" style="display: flex; align-items: center;">
                     {{ field }}
                 </div>
+                <div> {{ field.errors }} </div>
                 <!-- {% if field.help_text %}
                 <p class="help">{{ field.help_text|safe }}</p>
                 {% endif %} -->
@@ -57,13 +59,14 @@
 
             {% for field in signup_user %}
             <div class="row">
-                {{ field.errors }}
+               
                 <div class="col-25">
                     {{ field.label_tag }} 
                 </div>
                 <div class="col-75">
                     {{ field }}
                 </div>
+                <div> {{ field.errors }} </div>
                 <!-- {% if field.help_text %}
                 <p class="help">{{ field.help_text|safe }}</p>
                 {% endif %} -->
@@ -72,13 +75,14 @@
 
             {% for field in profile_user %}
             <div class="row">
-                {{ field.errors }}
+               
                 <div class="col-25">
                     {{ field.label_tag }} 
                 </div>
                 <div class="col-75" style="display: flex; align-items: center;">
                     {{ field }}
                 </div>
+                <div> {{ field.errors }} </div>
                 <!-- {% if field.help_text %}
                 <p class="help">{{ field.help_text|safe }}</p>
                 {% endif %} -->
