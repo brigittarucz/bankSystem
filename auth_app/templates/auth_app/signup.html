@@ -4,16 +4,43 @@
     {% if request.path == '/auth/signup/' %}
         <h3 class="mb-5">Welcome to Bank Customer Signup</h3>
         <p><b>Are you an employee? Go to employee signup <a href="{% url 'employee_app:employee_signup' %}">here</a></b></p>
-        <form method="post">
+        <form class="container" method="post">
             {% csrf_token %}
-            {{ signup_user.as_p }}
-            {{ profile_user.as_p }}
-            {{ signup_user.errors }}
-            {{ profile_user.errors }}
-            <button type="submit">Sign Up</button>
+
+            {% for field in signup_user %}
+            <div class="row">
+                {{ field.errors }}
+                <div class="col-25">
+                    {{ field.label_tag }} 
+                </div>
+                <div class="col-75">
+                    {{ field }}
+                </div>
+                <!-- {% if field.help_text %}
+                <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %} -->
+            </div>
+            {% endfor%}
+
+            {% for field in profile_user %}
+            <div class="row">
+                {{ field.errors }}
+                <div class="col-25">
+                    {{ field.label_tag }} 
+                </div>
+                <div class="col-75" style="display: flex; align-items: center;">
+                    {{ field }}
+                </div>
+                <!-- {% if field.help_text %}
+                <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %} -->
+            </div>
+            {% endfor%}
+          
+            <button type="submit" style="margin-left: 91%;">Sign Up</button>
         </form>
     {% else %}
-        <h3 class="mb-5">Welcome to Bank Customer Singnup</h3>
+        <!-- <h3 class="mb-5">Welcome to Bank Customer Singnup</h3>
         <p><b>Are you an customer? Go to customer signup <a href="{% url 'auth_app:signup' %}">here</a></b></p>
         <form method="post">
             {% csrf_token %}
@@ -22,6 +49,43 @@
             {{ signup_user.errors }}
             {{ profile_user.errors }}
             <button type="submit">Sign Up</button>
+        </form> -->
+        <h3 class="mb-5">Welcome to Bank Employee Signup</h3>
+        <p><b>Are you an customer? Go to customer signup <a href="{% url 'auth_app:signup' %}">here</a></b></p>
+        <form class="container" method="post">
+            {% csrf_token %}
+
+            {% for field in signup_user %}
+            <div class="row">
+                {{ field.errors }}
+                <div class="col-25">
+                    {{ field.label_tag }} 
+                </div>
+                <div class="col-75">
+                    {{ field }}
+                </div>
+                <!-- {% if field.help_text %}
+                <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %} -->
+            </div>
+            {% endfor%}
+
+            {% for field in profile_user %}
+            <div class="row">
+                {{ field.errors }}
+                <div class="col-25">
+                    {{ field.label_tag }} 
+                </div>
+                <div class="col-75" style="display: flex; align-items: center;">
+                    {{ field }}
+                </div>
+                <!-- {% if field.help_text %}
+                <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %} -->
+            </div>
+            {% endfor%}
+          
+            <button type="submit" style="margin-left: 91%;">Sign Up</button>
         </form>
     {% endif %}
 {% endblock %}
