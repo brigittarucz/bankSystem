@@ -53,8 +53,8 @@ def api_currency_detail(request, currency_code):
 @api_view(['GET'])
 def api_rate(request, rate_code):
     
-    currency_rates = Rate.objects.filter(rate_code=rate_code)
-    
+    currency_rates = Rate.filters.get_specific_rates(rate_code)
+    print(currency_rates)
     if not currency_rates:
         return Response(status=status.HTTP_404_NOT_FOUND)
     

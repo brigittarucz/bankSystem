@@ -1,5 +1,5 @@
 from django.db import models
-
+from api.managers import RateManager
 # API data object
 # Currency reported to base USD (PATCH)
 # /v1/latest 
@@ -15,7 +15,8 @@ class Currency(models.Model):
     def __str__(self):
         return f"{self.currency_name} - {self.currency_code} - {self.currency_timestamp} - {self.currency_rate}"
 
-    
+
+
 
 # API data object
 # Rates reported to base USD (POST)
@@ -28,3 +29,6 @@ class Rate(models.Model):
 
     def __str__(self):
         return f"{self.rate_code} - {self.rate_timestamp} - {self.rate_value}"
+
+    objects = models.Manager()
+    filters = RateManager()
