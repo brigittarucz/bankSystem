@@ -11,19 +11,19 @@ from api.models import Rate
 
 
 class CurrencyList(generics.ListCreateAPIView):
-    # permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, )
     queryset = Currency.objects.all()
     serializer_class = CurrencySerializer
 
 
 class SymbolList(generics.ListCreateAPIView):
-    # permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, )
     queryset = Currency.objects.all()
     serializer_class = SymbolSerializer
 
 
 class RateList(generics.ListCreateAPIView):
-    # permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, )
     rates = ['DKK', 'GBP', 'HUF', 'RON', 'NOK', 'SEK', 'JPY', 'RUB', 'INR']
     latestRates = []
 
@@ -39,7 +39,7 @@ class RateList(generics.ListCreateAPIView):
 # GET request is allowed with the view
 @api_view(['GET'])
 def api_currency_detail(request, currency_code):
-
+ 
     try:
         currency_detail = Currency.objects.get(currency_code=currency_code)
         print(currency_detail)

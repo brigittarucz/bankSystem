@@ -132,8 +132,10 @@ def signup(request):
                 #     'username': post_username
                 # }
 
-                # Needed for redirection
-                user = User.objects.get(username=post_username)
+                # Needed for recognizing is_staff bool
+                userObject = authenticate(request, username=post_username, password=post_password) 
+                user = User.objects.get(username=userObject)
+
                 request.session['is_staff'] = user.is_staff
                 request.session['username'] = post_username
                 loginUser(request, authenticate(request, username=post_username, password=post_password))
