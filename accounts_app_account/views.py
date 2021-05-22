@@ -10,9 +10,11 @@ def accounts_view(request):
     # print(path)
     profile = Profile.objects.get(user=user)
     user_account = Account.objects.filter(account_user_fk=profile)
+
     context = {
         "user": user,
         "user_accounts": user_account,
+        "profile": profile
     }
     return render(request, "accounts_app_account/account.html", context)
 

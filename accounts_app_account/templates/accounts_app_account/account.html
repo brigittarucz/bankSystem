@@ -3,9 +3,14 @@
 
 
 {% block content %}
-    <h3> Account Overview</h3>
+    <div style="display: flex; flex-wrap:nowrap; align-items: center;">
+      <h3 style="display: inline"> Account Overview</h3>
+      <p class={{ profile.customer_rank }} style='margin: 10px 30px; padding: 5px 15px;'>{{ profile.customer_rank| title }}</p>    
+    </div>
+    
     <p>Hello <b>  {{ user }} </b> , here is your information: </p>
-    <small class="badge badge-pill badge-primary"> <a href="/auth/dashboard" > Go dashboard</a></small>
+    <!-- <small class="badge badge-pill badge-primary"> <a href="/auth/dashboard" > Go dashboard</a></small> -->
+
 
     <div>
         <p> <b> Username:</b> {{user.first_name}} </p>

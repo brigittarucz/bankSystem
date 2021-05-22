@@ -89,6 +89,10 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
 # To utilize the database comment the above out and use:
 # python3 -m celery -A banking_system worker -l info -B --scheduler django_celery_beat.schedulers:DatabaseScheduler
 # docker run -d -p 5672:5672 rabbitmq 
