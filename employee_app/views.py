@@ -50,9 +50,9 @@ def edit_customer(request, customer_id):
 
             customer.customer_rank = request.POST['customer_rank']
             customer.customer_phone_number = request.POST['customer_phone_number']
-            post_loan = request.POST.get('customer_can_loan', False)
+            post_loan = request.POST.get('customer_has_loan', False)
             post_loan = True if post_loan == 'on' else False
-            customer.customer_can_loan = post_loan
+            customer.customer_has_loan = post_loan
             
             try:
                 with transaction.atomic():
@@ -96,9 +96,9 @@ def create_customer(request):
             post_password = request.POST['password1']
             post_rank = request.POST['customer_rank']
             post_phone = request.POST['customer_phone_number']
-            post_loan = request.POST.get('customer_can_loan', False)
+            post_loan = request.POST.get('customer_has_loan', False)
             post_loan = True if post_loan == 'on' else False
-            # post_loan = True if request.POST['customer_can_loan'] == 'on' else False
+            # post_loan = True if request.POST['customer_has_loan'] == 'on' else False
 
             try:
                 with transaction.atomic():

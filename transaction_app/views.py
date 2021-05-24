@@ -159,7 +159,12 @@ def loan_payment(request):
                                                  transaction_amount=amount,
                                                  transaction_currency='DKK')
         if loan.loan_remain == 0:
-            profile.customer_can_loan = True
+            profile.customer_has_loan = False
+
+        if loan.loan_remain < 0:
+            print('you cannot pay more than you applied for.')
+            return render(request, 'transaction_app/index.html', {'errorMessage' : 'errorMessage'})
+
         selected_account.save()
         transaction.save()
         profile.save()
@@ -191,8 +196,8 @@ def loan_view(request):
         
     if request.method == 'POST':
         total_amount = request.POST['total_amount']
-        profile.customer_can_loan = False
-        print(profile.customer_can_loan)
+        profile.customer_has_loan = True
+        print(profile.customer_has_loan)
         total_amount = int(total_amount)
         account_number = request.POST['account_number']
         loan_description = request.POST['loan_description']

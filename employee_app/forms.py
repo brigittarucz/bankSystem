@@ -14,7 +14,7 @@ class CustomerFormCreateValidation(forms.Form):
     email = forms.CharField(min_length=10, required=True)
     customer_rank = forms.ChoiceField(choices=RANK_CHOICES)
     customer_phone_number = forms.CharField(min_length=10, required=True, max_length=20)
-    customer_can_loan = forms.BooleanField(required=False, widget=forms.CheckboxInput)
+    customer_has_loan = forms.BooleanField(required=False, widget=forms.CheckboxInput)
 
     # class Meta:
     #     fields = '__all__'
@@ -30,7 +30,7 @@ class CustomerFormEditValidation(forms.Form):
     email = forms.CharField(min_length=10, required=True)
     customer_rank = forms.ChoiceField(choices=RANK_CHOICES)
     customer_phone_number = forms.CharField(min_length=10, required=True, max_length=20)
-    customer_can_loan = forms.BooleanField(required=False, widget=forms.CheckboxInput)
+    customer_has_loan = forms.BooleanField(required=False, widget=forms.CheckboxInput)
 
 class AccountFormCreateValidation(forms.Form):
     account_user_fk = forms.IntegerField(required=True)
