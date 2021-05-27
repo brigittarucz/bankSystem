@@ -11,6 +11,7 @@ def index(request):
 #docker run -p 6379:6379 -d redis:5 run this container to get up and running the chat
 def room(request, room_name):
     user = request.user
+    print(user)
     return render(request, 'chat/room.html', {
         'room_name': room_name,
         'user': user

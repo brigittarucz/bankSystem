@@ -2,23 +2,43 @@
 
 {% block content%}
 
-    <textarea id="chat-log" cols="100" disabled rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
+<div class="messages">
+    <ul id='chat-log'>
+        <li class="sent">
+            <p>How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!</p>
+        </li>
+        <li class="replies">
+            <p>When you're backed against the wall, break the god damn thing down.</p>
+        </li>
+   
+    </ul>
+</div>
+    <input id="chat-message-input" type="text" size="100" placeholder='Write a new message....'><br>
+    <input class='btn btn-primary mt-4' id="chat-message-submit" type="button" value="Send">
     {{ room_name|json_script:"room-name" }}
+
+    <style>
+        .sent {
+            float: right;
+        }
+        .replies {
+            float: left
+        }
+    </style>
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
         // var chatId =  Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
+        const currentUsername = '{{ user }}' 
         
         const chatSocket = new WebSocket(
             'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
         );
 
         chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
+            var data = JSON.parse(e.data);
             console.log(data)
-            document.querySelector('#chat-log').value += (data.message + '\n');
+           
+            
         };
 
         chatSocket.onclose = function(e) {
@@ -36,9 +56,28 @@
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
-                'message': message
+                'message': message,
+                'command':'fetch_messages'
             }));
             messageInputDom.value = '';
         };
+
+        // const data = JSON.parse(e.data);
+            // var message = data.message
+            // var author = data.username
+            // console.log(data)
+            // var msgListTag = document.createElement('li');
+            // var pTag = document.createElement('p');
+            // pTag.textContent = message;
+            // if( currentUsername === author){
+            //     msgListTag.className = 'sent';
+            // } else {
+            //     msgListTag.className = 'replies'
+            // }
+            // msgListTag.appendChild(pTag)
+            // document.querySelector('#chat-log').appendChild(msgListTag)
     </script>
 {% endblock content%}
+
+
+
