@@ -11,6 +11,9 @@
     <p>Hello <b>  {{ user }} </b> , here is your information: </p>
     <!-- <small class="badge badge-pill badge-primary"> <a href="/auth/dashboard" > Go dashboard</a></small> -->
 
+    {% if profile.customer_rank != 'gold' %}
+      <p>It seems your account's rank is not gold. This prevents you from being able to get a loan. Do you want an upgrade? Click <a href="{% url 'chat:index' %}">here</a> to chat with one of our employees.</p>
+    {% endif %}
 
     <div>
         <p> <b> Username:</b> {{user.first_name}} </p>
