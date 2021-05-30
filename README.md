@@ -71,9 +71,22 @@ urlpatterns = [
 ![Image](./READMEGraphics/API_Rates.PNG)
 ![Image](./READMEGraphics/API_Convert.PNG)
 
-- The middleware filters the access of users to the bank employee feature view through the IP address currently set to the classic 127.0.0.1.
+- The middleware filters the access of users to the bank employee feature view through the IP address currently set to the classic 127.0.0.1. If changed to another IP it will generate a 403 error.
 
+```
+ def __call__(self, request):
+    
+      allowed_ip_addresses = '127.0.0.1'
+      private_paths = settings.PRIVATE_PATHS['ONLY_FOR_EMPLOYEES']
+      employee_ip = request.META.get('REMOTE_ADDR')
+      requested_path = request.path
+      print(f'** client ip address: {employee_ip}')
+      if employee_ip != allowed_ip_addresses and requested_path in private_paths:
+         raise PermissionDenied()
+         print('cannot continue')
+```
 
+![Image](./READMEGraphics/Middleware_403.PNG)
 
 - Lastly, it can assist the developer through Postman to create or update records and with a provided REST Documentation:
 
