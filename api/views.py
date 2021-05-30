@@ -128,7 +128,7 @@ def api_convert(request, rate_code_from, rate_code_to, amount):
     return Response(data=data)
 
 
-# http://127.0.0.1:8000/api/v1/update/eur/
+# http://127.0.0.1:8000/api/v1/update/EUR/
 @api_view(['PATCH'])
 def api_currency_update(request, currency_code):
 
@@ -154,7 +154,7 @@ def api_currency_update(request, currency_code):
 @api_view(['POST'])
 def api_rate_historical_post(request):
     if request.method == 'POST':
-        serializer = RateSerializer(rate, data=request.data)
+        serializer = RateSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
             serializer.save()

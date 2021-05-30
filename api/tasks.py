@@ -62,4 +62,8 @@ def update_currency_rates():
 # get_currency(2)
 # python3 -m celery -A banking_system worker -l info
 # python3 -m celery -A banking_system beat -l info 
+
+# To update make sure you run Docker and the command below in the terminal:
+# docker run -d -p 5672:5672 rabbitmq 
+# docker run -d -p 6379:6379 redis
 # python3 -m celery -A banking_system worker -l info -B 
