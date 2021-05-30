@@ -72,7 +72,8 @@ def transaction_view(request):
 
                 except Account.DoesNotExist:
                     context = {
-                        'error': 'error'
+                        'error': 'error',
+                        "accounts" : accounts
                     }
                     return render(request, 'transaction_app/transaction.html', context)
                 
