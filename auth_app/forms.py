@@ -30,7 +30,7 @@ class SignupProfileForm(forms.ModelForm):
 
         # Customizing label for mfe
         labels = {
-            'customer_mfe': 'Multi-factor authentication enabled'
+            'customer_mfe': 'Multi-factor auth enabled'
         }
 
         fields = [

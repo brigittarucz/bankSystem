@@ -82,13 +82,17 @@ CELERY_BROKER_URL = 'amqp://localhost'
 CELERY_BEAT_SCHEDULE = {
     "scheduled_task": {
         "task": "api.tasks.update_rates",
-        "schedule": 120.0
+        "schedule": 5.0
     },
     "scheduled_task": {
         "task": "api.tasks.update_currency_rates",
         "schedule": 5.0
     }
 }
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # To utilize the database comment the above out and use:
 # python3 -m celery -A banking_system worker -l info -B --scheduler django_celery_beat.schedulers:DatabaseScheduler

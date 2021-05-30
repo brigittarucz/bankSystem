@@ -3,8 +3,9 @@ from api.models import Currency, Rate
 from datetime import datetime, timedelta
 import requests
 
-CURRENCY_API= 'https://api.ratesapi.io/api/latest?base=USD'
-CURRENCY_API_HISTORICAL = 'https://api.ratesapi.io/api/'
+# CURRENCY_API= 'https://api.ratesapi.io/api/latest?base=USD'
+CURRENCY_API= 'https://exchange-rates.abstractapi.com/v1/live/?api_key=d7c6b70553064c90ab1d0a893593021f&base=USD'
+CURRENCY_API_HISTORICAL = 'https://exchange-rates.abstractapi.com/v1/live/?api_key=d7c6b70553064c90ab1d0a893593021f&base=USD&date='
 
 # Lets us create tasks without having concrete app
 @shared_task(max_retried=3)
@@ -22,7 +23,7 @@ def update_rates():
         dateObj = todayObj - timedelta(days=day)
         
         # 2. In a loop for each date, make a request 
-        r = requests.get(CURRENCY_API_HISTORICAL + dateObj.strftime('%Y-%m-%d') + '?base=USD')
+        r = requests.get(CURRENCY_API_HISTORICAL + dateObj.strftime('%Y-%m-%d'))
         currencyObject = r.json()
         print(r.json())
 
@@ -32,7 +33,7 @@ def update_rates():
             for rate in rates:
                 newRate = Rate(rate_code=rate, 
                             rate_timestamp=int(datetime.timestamp(dateObj)), 
-                            rate_value=currencyObject['rates'][rate])
+                            rate_value=currencyObject['exchange_rates'][rate])
 
                 # 4. Save new obj to db
                 newRate.save()
@@ -44,15 +45,16 @@ def update_currency_rates():
     currencies = Currency.objects.all()
     r = requests.get(CURRENCY_API)
     currencyObject = r.json()
-    # print(currencyObject['rates'])
+    print(currencyObject)
     
     if r.status_code == 200:
         for currency in currencies:
             currency_code = currency.currency_code
             # 2. Get existent DB elems
             # 3. Patch them one by one
-
-            Currency.objects.filter(currency_code=currency_code).update(currency_rate=currencyObject['rates'][currency_code])
+            if currency_code != 'USD':
+                Currency.objects.filter(currency_code=currency_code).update(currency_timestamp=currencyObject['last_updated'])
+                Currency.objects.filter(currency_code=currency_code).update(currency_rate=currencyObject['exchange_rates'][currency_code])
             
 
 
@@ -60,3 +62,4 @@ def update_currency_rates():
 # get_currency(2)
 # python3 -m celery -A banking_system worker -l info
 # python3 -m celery -A banking_system beat -l info 
+# python3 -m celery -A banking_system worker -l info -B 
