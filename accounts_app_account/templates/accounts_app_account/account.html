@@ -8,20 +8,21 @@
       <p class={{ profile.customer_rank }} style='margin: 10px 30px; padding: 5px 15px;'>{{ profile.customer_rank| title }}</p>    
     </div>
     
-    <p>Hello <b>  {{ user }} </b> , here is your information: </p>
+    <p style="margin: 20px 0px;">Hello <b>  {{ user }} </b> , here is your information: </p> 
     <!-- <small class="badge badge-pill badge-primary"> <a href="/auth/dashboard" > Go dashboard</a></small> -->
 
     {% if profile.customer_rank != 'gold' %}
       <p>It seems your account's rank is not gold. This prevents you from being able to get a loan. Do you want an upgrade? Click <a href="{% url 'chat:index' %}">here</a> to chat with one of our employees.</p>
     {% endif %}
 
+    <span> We <b>strongly</b> suggest to activate the multifactor authentification <a href="/settings/mfa/configure/"> here</a>.</span>
+    
+    <p></p>
+
     <div>
         <p> <b> Username:</b> {{user.username}} </p>
         <p> <b> Email: </b>  {{user.email}}</p>
         <p> <b> Phone: </b> {{customer.customer_phone_number}} </p>
-
-        <span> <b> We strongly suggest activate the multifactor authentification </b> <a href="/settings/mfa/configure/"> here </a></span>
-
     </div>
     <table class="table">
         <thead>
@@ -37,8 +38,8 @@
                 <tr>
                   <td>{{  account.account_number }}</td>
                   <td> DKK {{account.account_balance}}</td>
-                  <td> {{customer.customer_rank}} </td>
-                  <td> <a href=""> See more </a> </td>
+                  <td> {{profile.customer_rank}} </td>
+                  <td>  </td>
                 </tr>
             </tbody>
             {% endfor %}
