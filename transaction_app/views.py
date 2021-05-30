@@ -45,32 +45,42 @@ def transaction_view(request):
         print(account_selected)
         receiver = request.POST['receiver']
         amount = request.POST['amount']
-        amount = int(amount)
-        if account_selected.account_balance >= amount:
-            transaction = Transaction()
-            unique_id = get_random_string(length=20)
-            # Getting the account data from the receiver
-            transaction.transaction_account_number_sender = account_selected.account_number
-            #should be autogenerate, check UUID
-            transaction.transaction_user_account_fk = account_selected    
-            transaction.transaction_id = unique_id
-            transaction.transaction_account_number_receiver = receiver
-            receiver_ =  Account.objects.get(account_number=receiver)
-            transaction.transaction_amount = amount
-            transaction.transaction_currency = 'DKK'
-            balance_sender = account_selected.account_balance - amount
-            account_selected.account_balance = balance_sender
-            receiver_.account_balance = receiver_.account_balance + amount
-            
-            receiver_.save()
-            account_selected.save()
-            transaction.save()
-            print('the balance of the sender is: ', balance_sender)
-            return HttpResponseRedirect('/transaction/confirmation/')
-        else: 
-            #Should print some error message in the frontend, maybe with the if operator
-            print("you don't have enough money")
+        if amount.isdigit():
+            amount = int(amount)
+            if account_selected.account_balance >= amount:
+                transaction = Transaction()
+                unique_id = get_random_string(length=20)
+                # Getting the account data from the receiver
+                transaction.transaction_account_number_sender = account_selected.account_number
+                #should be autogenerate, check UUID
+                transaction.transaction_user_account_fk = account_selected    
+                transaction.transaction_id = unique_id
+                transaction.transaction_account_number_receiver = receiver
+                try:
+                    receiver_ =  Account.objects.get(account_number=receiver)
+                    transaction.transaction_amount = amount
+                    transaction.transaction_currency = 'DKK'
+                    balance_sender = account_selected.account_balance - amount
+                    account_selected.account_balance = balance_sender
+                    receiver_.account_balance = receiver_.account_balance + amount
+                    
+                    receiver_.save()
+                    account_selected.save()
+                    transaction.save()
+                    print('the balance of the sender is: ', balance_sender)
+                    return HttpResponseRedirect('/transaction/confirmation/')
 
+                except Account.DoesNotExist:
+                    context = {
+                        'error': 'error'
+                    }
+                    return render(request, 'transaction_app/transaction.html', context)
+                
+            else: 
+                #Should print some error message in the frontend, maybe with the if operator
+                print("you don't have enough money")
+        else:
+            print('please enter a valid amount')
     return render(request, 'transaction_app/transaction.html', context)
 
 
@@ -149,7 +159,12 @@ def loan_payment(request):
                                                  transaction_amount=amount,
                                                  transaction_currency='DKK')
         if loan.loan_remain == 0:
-            profile.customer_can_loan = True
+            profile.customer_has_loan = False
+
+        if loan.loan_remain < 0:
+            print('you cannot pay more than you applied for.')
+            return render(request, 'transaction_app/index.html', {'errorMessage' : 'errorMessage'})
+
         selected_account.save()
         transaction.save()
         profile.save()
@@ -181,8 +196,8 @@ def loan_view(request):
         
     if request.method == 'POST':
         total_amount = request.POST['total_amount']
-        profile.customer_can_loan = False
-        print(profile.customer_can_loan)
+        profile.customer_has_loan = True
+        print(profile.customer_has_loan)
         total_amount = int(total_amount)
         account_number = request.POST['account_number']
         loan_description = request.POST['loan_description']

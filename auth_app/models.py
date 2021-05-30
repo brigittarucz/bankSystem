@@ -16,20 +16,20 @@ class Profile(models.Model):
     customer_token = models.CharField(max_length=256)
     # # Multi factor enabled
     customer_mfe = models.BooleanField(blank=False)
-    customer_can_loan = models.BooleanField(blank=False)
+    customer_has_loan = models.BooleanField(blank=False)
 
     # Converts Python obj into strings
     def __str__(self):
         # Returning self would get an infinite loop
-        return f"{self.user} | {self.customer_phone_number} | {self.customer_rank} | { True if self.customer_can_loan else False}"
+        return f"{self.user} | {self.customer_phone_number} | {self.customer_rank} | { True if self.customer_has_loan else False}"
 
     @classmethod
-    def create_profile(self, user, phone, token, mfe, can_loan):
+    def create_profile(self, user, phone, token, mfe, has_loan):
         profile = Profile.objects.create(user = user, 
                                          customer_phone_number = phone,
                                          customer_token = token, 
                                          customer_mfe = mfe, 
-                                         customer_can_loan = can_loan)
+                                         customer_has_loan = has_loan)
 
         profile.save()
         return profile

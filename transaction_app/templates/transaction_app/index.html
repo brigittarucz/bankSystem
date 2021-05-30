@@ -4,6 +4,12 @@
     {% block content %}
     <h3 class='mb-5'> Hello {{user}}. How we can help you today?</h3>
 
+    {% if errorMessage %}
+       <div class="alert alert-danger" role="alert">
+        Fatal error: You are trying to pay more than you're applied.
+       </div>
+    {% endif %}
+
     <a class ='btn btn-primary mb-4' href="/transaction/new"> New Transactions</a>
     <br>
     <a  class ='btn btn-primary  mb-4' href="/transaction/transactions"> See your transactions</a>

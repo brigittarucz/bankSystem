@@ -23,6 +23,8 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     # Task queues
     path('celery-progress/', include('celery_progress.urls')),
+    #MFA
+    path('settings/', include('django_mfa.urls')),
     # Documentation
     path('documentation/', include_docs_urls(title=API_TITLE, description=API_DESCRIPTION))
 ]

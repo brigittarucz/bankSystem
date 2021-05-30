@@ -1,34 +1,19 @@
-# from chat.managers import ThreadManager
-# from django.db import models
+from django.db import models
+from auth_app.models import User
+from django.utils import timezone
 
-# class TrackingModel(models.Model):
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
+class Message(models.Model):
+    message_id = models.CharField(max_length=20)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(default=timezone.now)
 
-#     class Meta:
-#         abstract = True
 
-# class Thread(TrackingModel):
-#     THREAD_TYPE = (
-#         ('personal', 'Personal'),
-#         ('group', 'Group')
-#     )
+    def __str__(self):
+        return self.author.username
 
-#     name = models.CharField(max_length=50, null=True, blank=True)
-#     thread_type = models.CharField(max_length=15, choices=THREAD_TYPE, default='group')
-#     users = models.ManyToManyField('auth.User')
 
-#     objects = ThreadManager()
-
-#     def __str__(self) -> str:
-#         if self.thread_type == 'personal' and self.users.count() == 2:
-#             return f'{self.users.first()} and {self.users.last()}'
-#         return f'{self.name}'
-
-# class Message(TrackingModel):
-#     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
-#     sender = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-#     text = models.TextField(blank=False, null=False)
-
-#     def __str__(self) -> str:
-#         return f'From <Thread - {self.thread}>'
+    #preload last 10 messages
+    
+    def last_10_messages(self):
+        return Message.objects.order_by('-timestamp').all()[:10]
