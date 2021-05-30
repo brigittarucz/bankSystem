@@ -35,10 +35,17 @@ def edit_customer(request, customer_id):
             # Todo: Add context with errors
             return overview_customers(request)
 
+    # try:
+    #     user = User.objects.get(customer)
+    # except User.DoesNotExist:
+    #         # Todo: Add context with errors
+    #         return overview_customers(request)
+
+
     # GET method for populating form
     if request.method == 'GET':
         context = {
-            'customer': customer
+            'customer': customer,
         }
 
     # POST method for editing user

@@ -10,9 +10,9 @@
         <input type="text" name="last_name" disabled placeholder="Enter Last Name" value="{{ customer.user.last_name }}"/>
         <input type="email" name="email" placeholder="Enter Email" value="{{ customer.user.email }}" />
         <select name="customer_rank">
-            <option value="bronze">Bronze</option>
-            <option value="silver">Silver</option>
-            <option value="gold">Gold</option>
+            <option value="bronze" {% if customer.customer_rank == 'bronze' %}selected="selected"{% endif %} >Bronze</option>
+            <option value="silver" {% if customer.customer_rank == 'silver' %}selected="selected"{% endif %}>Silver</option>
+            <option value="gold" {% if customer.customer_rank == 'gold' %}selected="selected"{% endif %}>Gold</option>
         </select>
         <input type="number" name="customer_phone_number" placeholder="Phone Number" value="{{ customer.customer_phone_number }}" />
         <label>Customer can loan:</label>

@@ -14,17 +14,55 @@
     {% endif %}
     <hr>
     {% for customer in customers %}
-        {{ customer }} 
-        <a href="/employee/edit_customer/{{customer.id}}"> Edit customer </a>
-        <h4> Customer Accounts: </h4>
-        {% for account in accounts %}
-        {% if account.account_user_fk == customer %}
-        <!-- Todo: Add manage loans / payments -->
-        <a href="/employee/edit_customer_account/{{customer.id}}/{{account.id}}"> Edit account </a>
-                {{ account }}
-            {% endif %}
-        {% endfor %}
-        <hr/>
+        {% if customer.user.is_staff == False %}
+        <h5 style="margin-top: 30px"> Customer: </h5>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Customer Rank</th>
+                <th scope="col">Customer Loan</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">{{ customer.user }}</th>
+                <td>{{ customer.customer_phone_number }}</td>
+                <td>{{ customer.customer_rank }}</td>
+                <td>{{ customer.customer_has_loan}}</td>
+                <td><a href="/employee/edit_customer/{{customer.id}}"> Edit customer </a></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h5> Customer Accounts: </h5>
+        
+            
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Account Number</th>
+                        <th scope="col">Account Balance</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for account in accounts %}
+                        {% if account.account_user_fk == customer %}
+                        <tr>
+                            <th scope="row">{{ account.account_number }}</th>
+                            <td>{{ account.account_balance }}</td>
+                            <td><a href="/employee/edit_customer_account/{{customer.id}}/{{account.id}}"> Edit account </a></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+        {% endif %}
     {% endfor %}
 
 {% endblock %}
