@@ -1,6 +1,6 @@
 # Exam Project Banking System - Django Elective Course 
 
-This document is created with the purpose of presenting a walkthrough for the application, built using the Django framework. Ultimately, the scope is demonstrating our acquired knowledge during the course and presenting a few of the many different features. The system is split into several different applications to have a clear separation of concerns and to avoid bloating the code base.
+This document is created with the purpose of presenting a walkthrough for the application, built using the Django framework. Ultimately, the scope is demonstrating our acquired knowledge during the course as well as the relevance of the system by presenting a few of the many different features which follow industry standards and Django recommended patterns. The system is split into several different applications to have a clear separation of concerns and to avoid bloating the code base.
 
 ## Technologies
 
@@ -39,7 +39,7 @@ The focus while implementing different features was meeting the requirements pro
 
 ![Image](./READMEGraphics/Chat.PNG)
 
-- The API with its several routes can assist the customer with updated currencies, rates and a conversion feature. The process of updating the data is executed through Celery.
+- The API with its several routes can assist the customer with updated currencies, rates and a conversion feature. The process of updating the data is executed through making use of Django's Task Queues which are combined Celery.
 
 ```
 urlpatterns = [
@@ -71,9 +71,16 @@ urlpatterns = [
 ![Image](./READMEGraphics/API_Rates.PNG)
 ![Image](./READMEGraphics/API_Convert.PNG)
 
+- The middleware filters the access of users to the bank employee feature view through the IP address currently set to the classic 127.0.0.1.
+
+
+
 - Lastly, it can assist the developer through Postman to create or update records and with a provided REST Documentation:
 
 ![Image](./READMEGraphics/Slash_Create.PNG)
 ![Image](./READMEGraphics/Slash_Update.PNG)
 ![Image](./READMEGraphics/REST_Documentation.PNG)
 
+## Extra Features
+
+These ought to be relevant to the bank and are represented by the aforementioned API conversion ability and the additional view upon updated API currencies in the Dashboard.
